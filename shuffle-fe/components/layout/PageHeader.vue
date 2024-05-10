@@ -1,6 +1,6 @@
 <template>
   <header class="w-full bg-accent grid grid-cols-3 items-center px-2 shadow-md">
-    <h1 class="text-xl font-thin">Shufflescape</h1>
+    <h1 class="text-xl font-thin px-8">Shufflescape</h1>
     <page-navigation />
     <span class="flex justify-end items-center gap">
       <client-only>
