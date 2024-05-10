@@ -5,7 +5,7 @@ const shuffleGovernorContract = {
   abi: shuffleGovernorABI,
 } as const;
 
-export const useDaoFactory = () => {
+export const useGovernorFactory = () => {
   const getProposalThreshold = () =>
     useReadContract({
       ...shuffleGovernorContract,
