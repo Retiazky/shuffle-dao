@@ -11,3 +11,7 @@ export type ClassInfo = {
   level: ClassLevel;
   partOfCourse: boolean;
 };
+export interface Instructor {
+  address: string;
+  name: string;
+}
