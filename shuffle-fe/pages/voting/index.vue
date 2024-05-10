@@ -3,7 +3,6 @@
     <h1 class="text-6xl text-center m-4">Voting page</h1>
     <div class="w-full flex flex-col items-center">
       <h2 class="text-2xl">Current topic: {{ votingInfo.name }}</h2>
-      <h3>Categories:</h3>
       <ul class="w-1/4 border p-2">
         <li
           v-for="category in votingInfo.categories"
@@ -13,6 +12,7 @@
           <span>{{ category.category }}</span>
           <s-button
             variant="outline"
+            class
             @click="voteForCategory(category.category)"
           >
             Vote ({{ category.votes }})
@@ -33,13 +33,11 @@ interface VotingInfo {
   categories: CategoryVotes[];
 }
 
-const votingInfo: VotingInfo = ref<VotingInfo>({
-  name: "Best of 2021",
+const votingInfo = ref<VotingInfo>({
+  name: "New lector",
   categories: [
-    { category: "Best Movie", votes: 0 },
-    { category: "Best TV Show", votes: 0 },
-    { category: "Best Song", votes: 0 },
-    { category: "Best Album", votes: 0 },
+    { category: "Lucia Bandova", votes: 0 },
+    { category: "Danka Matica", votes: 0 },
   ],
 });
 
