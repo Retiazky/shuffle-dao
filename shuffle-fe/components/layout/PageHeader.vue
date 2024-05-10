@@ -1,10 +1,8 @@
 <template>
-  <header
-    class="w-full bg-accent flex justify-between items-center p-4 shadow-md"
-  >
+  <header class="w-full bg-accent grid grid-cols-3 items-center p-4 shadow-md">
     <h1 class="text-xl font-thin">Shufflescape</h1>
     <page-navigation />
-    <span class="flex items-center gap">
+    <span class="flex justify-end items-center gap">
       <client-only>
         <s-dropdown-menu>
           <s-dropdown-menu-trigger as-child>
@@ -33,7 +31,7 @@
           </s-dropdown-menu-content>
         </s-dropdown-menu>
 
-        <connect-button />
+        <connect-button class="w-1/3" />
       </client-only>
     </span>
   </header>

@@ -1,7 +1,7 @@
 <template>
   <s-dialog v-if="!isConnected">
     <s-dialog-trigger as-child>
-      <s-button class="border border-white" variant="secondary">
+      <s-button class="border border-foreground" variant="secondary">
         Connect
       </s-button>
     </s-dialog-trigger>
@@ -25,7 +25,7 @@
 
   <s-button
     v-else
-    class="border border-white w-full m-2"
+    class="border border-foreground w-full m-2"
     variant="secondary"
     @click="disconnectWallet"
   >

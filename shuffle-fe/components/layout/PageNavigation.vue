@@ -1,9 +1,10 @@
 <template>
-  <div class="w-1/3 flex justify-evenly p-2">
+  <div class="w-full flex justify-evenly p-2">
     <nuxt-link
       v-for="link in NAVIGATION"
       :key="link.to"
       :to="link.to"
+      class="text-xl font-thin"
       active-class="underline"
     >
       {{ link.label }}
