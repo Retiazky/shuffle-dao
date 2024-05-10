@@ -1,5 +1,5 @@
 <template>
-  <header class="w-full bg-accent grid grid-cols-3 items-center p-4 shadow-md">
+  <header class="w-full bg-accent grid grid-cols-3 items-center px-2 shadow-md">
     <h1 class="text-xl font-thin">Shufflescape</h1>
     <page-navigation />
     <span class="flex justify-end items-center gap">
@@ -38,8 +38,8 @@
 </template>
 
 <script lang="ts" setup>
-import PageNavigation from "@/components/layout/PageNavigation.vue";
-import { Icon } from "@iconify/vue";
+import PageNavigation from '@/components/layout/PageNavigation.vue';
+import { Icon } from '@iconify/vue';
 
 const colorMode = useColorMode();
 </script>
