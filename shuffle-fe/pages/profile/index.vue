@@ -1,5 +1,5 @@
 <template>
-  <div>Profile</div>
+  <page-title title="Profile" />
 </template>
 
 <script lang="ts" setup></script>

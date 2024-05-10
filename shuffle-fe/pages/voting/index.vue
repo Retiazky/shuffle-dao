@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-6xl text-center m-4">Voting page</h1>
+    <page-title title="Voting" />
     <div class="w-full flex flex-col items-center">
       <h2 class="text-2xl">Current topic: {{ votingInfo.name }}</h2>
       <ul class="w-1/4 border p-2">
@@ -34,10 +34,10 @@ interface VotingInfo {
 }
 
 const votingInfo = ref<VotingInfo>({
-  name: "New lector",
+  name: 'New lector',
   categories: [
-    { category: "Lucia Bandova", votes: 0 },
-    { category: "Danka Matica", votes: 0 },
+    { category: 'Lucia Bandova', votes: 0 },
+    { category: 'Danka Matica', votes: 0 },
   ],
 });
 
