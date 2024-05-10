@@ -1,0 +1,13 @@
+export enum ClassLevel {
+  BEGINNER = 'Beginner',
+  INTERMEDIATE = 'Intermediate',
+  ADVANCED = 'Advanced',
+  OPEN = 'Open',
+}
+
+export type ClassInfo = {
+  date: string;
+  time: string;
+  level: ClassLevel;
+  partOfCourse: boolean;
+};
