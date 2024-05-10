@@ -6,6 +6,10 @@ type RectangleParams = {
   fill?: string,
 }
 
+function clamp(num: number, min: number, max: number) {
+  return Math.max(min, Math.min(num, max));
+}
+
 export class VersatilePoint {
   constructor(
     public x: number,
@@ -15,11 +19,11 @@ export class VersatilePoint {
   ) {}
 
   bottom() {
-    return new VersatilePoint(this.x, this.y + this.height, this.width, this.height)
+    return new VersatilePoint(this.x, clamp(this.y + this.height, 0, this.height), this.width, this.height)
   }
 
   right() {
-    return new VersatilePoint(this.x + this.width, this.y, this.width, this.height)
+    return new VersatilePoint(clamp(this.x + this.width, 0, this.width), this.y, this.width, this.height)
   }
 
   center() {
@@ -46,8 +50,8 @@ export class VersatilePoint {
     return new VersatilePoint(this.x + gap, this.y, this.width, this.height)
   }
 
-  do(cb: (x: number, y: number) => void) {
-    cb(this.x, this.y)
+  do<T>(cb: (params: { x: number, y: number }) => T) {
+    return cb({ x: this.x, y: this.y }) as T
   }
 } 
 
@@ -61,7 +65,7 @@ export function rect(ctx: CanvasRenderingContext2D, params: RectangleParams) {
   }
 
   ctx.fillStyle = coercedParams.fill
-  ctx.fillRect(coercedParams.x, coercedParams.y, coercedParams.width, coercedParams.height)
+  ctx.fillRect(coercedParams.x, coercedParams.y, coercedParams.width, coercedParams.height) 
 
   return new VersatilePoint(coercedParams.x, coercedParams.y, coercedParams.width, coercedParams.height)
 }
