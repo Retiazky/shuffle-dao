@@ -1,5 +1,7 @@
 <template>
-  <header class="w-full bg-accent flex justify-between items-center p-4">
+  <header
+    class="w-full bg-accent flex justify-between items-center p-4 shadow-md"
+  >
     <h1 class="text-xl font-thin">Shufflescape</h1>
     <page-navigation />
     <span class="flex items-center gap">
@@ -9,7 +11,7 @@
             <s-button variant="ghost">
               <icon
                 icon="radix-icons:moon"
-                class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-white"
+                class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
               />
               <icon
                 icon="radix-icons:sun"
@@ -30,18 +32,16 @@
             </s-dropdown-menu-item>
           </s-dropdown-menu-content>
         </s-dropdown-menu>
-      </client-only>
 
-      <s-button class="border border-white" variant="secondary">
-        Connect
-      </s-button>
+        <connect-button />
+      </client-only>
     </span>
   </header>
 </template>
 
 <script lang="ts" setup>
-import PageNavigation from '@/components/layout/PageNavigation.vue';
-import { Icon } from '@iconify/vue';
+import PageNavigation from "@/components/layout/PageNavigation.vue";
+import { Icon } from "@iconify/vue";
 
 const colorMode = useColorMode();
 </script>

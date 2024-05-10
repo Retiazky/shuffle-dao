@@ -4,8 +4,7 @@
       v-for="link in NAVIGATION"
       :key="link.to"
       :to="link.to"
-      active-class="text-black underline"
-      class="text-primary-foreground"
+      active-class="underline"
     >
       {{ link.label }}
     </nuxt-link>

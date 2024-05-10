@@ -1,7 +1,25 @@
 <template>
   <div>
-    <h1>Voting page</h1>
-    <h2>{{ votingInfo.name }}</h2>
+    <h1 class="text-6xl text-center m-4">Voting page</h1>
+    <div class="w-full flex flex-col items-center">
+      <h2 class="text-2xl">Current topic: {{ votingInfo.name }}</h2>
+      <h3>Categories:</h3>
+      <ul class="w-1/4 border p-2">
+        <li
+          v-for="category in votingInfo.categories"
+          :key="category.category"
+          class="flex justify-between gap-2 items-center w-full my-1"
+        >
+          <span>{{ category.category }}</span>
+          <s-button
+            variant="outline"
+            @click="voteForCategory(category.category)"
+          >
+            Vote ({{ category.votes }})
+          </s-button>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -24,4 +42,11 @@ const votingInfo: VotingInfo = ref<VotingInfo>({
     { category: "Best Album", votes: 0 },
   ],
 });
+
+const voteForCategory = (category: string) => {
+  const categoryIndex = votingInfo.value.categories.findIndex(
+    (c) => c.category === category
+  );
+  votingInfo.value.categories[categoryIndex].votes++;
+};
 </script>
