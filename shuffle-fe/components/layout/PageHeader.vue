@@ -1,6 +1,7 @@
 <template>
   <header class="w-full bg-accent flex justify-between items-center p-4">
-    <h1 class="text-xl font-bold text-white">Shufflescape</h1>
+    <h1 class="text-xl font-thin">Shufflescape</h1>
+    <page-navigation />
     <span class="flex items-center gap">
       <client-only>
         <s-dropdown-menu>
@@ -40,6 +41,7 @@
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
+import PageNavigation from "@/components/layout/PageNavigation.vue";
 
 const colorMode = useColorMode();
 </script>

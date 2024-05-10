@@ -1,26 +1,29 @@
 <template>
-  <div class="w-full flex justify-evenly p-2 bg-secondary">
+  <div class="w-1/3 flex justify-evenly p-2">
     <nuxt-link
-      to="/home"
-      active-class="text-black"
+      v-for="link in NAVIGATION"
+      :key="link.to"
+      :to="link.to"
+      active-class="text-black underline"
       class="text-primary-foreground"
-      >Home</nuxt-link
     >
-    <nuxt-link
-      to="/courses"
-      active-class="text-black"
-      class="text-primary-foreground"
-      >Courses</nuxt-link
-    >
-    <nuxt-link
-      to="/profile"
-      active-class="text-black"
-      class="text-primary-foreground"
-      >Profile</nuxt-link
-    >
+      {{ link.label }}
+    </nuxt-link>
   </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+interface NavigationLink {
+  to: string;
+  label: string;
+}
+
+const NAVIGATION: NavigationLink[] = [
+  { to: "/home", label: "Home" },
+  { to: "/courses", label: "Courses" },
+  { to: "/voting", label: "Voting" },
+  { to: "/profile", label: "Profile" },
+];
+</script>
 
 <style></style>
