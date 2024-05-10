@@ -24,32 +24,35 @@ contract ShuffleTest is Test {
 
         vm.startPrank(instructor);
         console.log("Instructor: %s", instructor);
+
         uint256 tokenBalance = token.balanceOf(instructor);
         console.log("Token balance: %d", tokenBalance);
+
         token.delegate(instructor);
         uint256 votes = token.getVotes(instructor);
         console.log("Votes: %d", votes);
 
-        // address[] memory addrs = new address[](1);
-        // addrs[0] = address(dao);
+        skip(10);
 
-        // uint256[] memory values = new uint256[](1);
-        // values[0] = 0;
+        address[] memory addrs = new address[](1);
+        addrs[0] = address(dao);
 
-        // string memory name = "Alice";
-        // bytes memory callData = abi.encodeWithSignature(
-        //     "addInstructor(address,string)",
-        //     instructor,
-        //     name
-        // );
-        // bytes[] memory callDatas = new bytes[](1);
-        // callDatas[0] = callData;
+        uint256[] memory values = new uint256[](1);
+        values[0] = 0;
 
-        // governor.propose(
-        //     addrs,
-        //     values,
-        //     callDatas,
-        //     "Add Alice as an instructor"
-        // );
+        string memory name = "Alice";
+        bytes memory callData = abi.encodeWithSignature(
+            "addInstructor(address,string)",
+            instructor,
+            name
+        );
+        bytes[] memory callDatas = new bytes[](1);
+        callDatas[0] = callData;
+        governor.propose(
+            addrs,
+            values,
+            callDatas,
+            "Add Alice as an instructor"
+        );
     }
 }

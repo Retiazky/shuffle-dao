@@ -2,7 +2,7 @@ import { abi as shuffleDAOABI } from "@/abi/ShuffleDAO";
 import type { Address } from "viem";
 
 const shuffleDAOContract = {
-  address: "0x0000000000000000000000000000000000000000",
+  address: "0x913625F0BaF4796629e14a487eC1AF6a921D4F18",
   abi: shuffleDAOABI,
 } as const;
 

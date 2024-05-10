@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
+import {console} from "forge-std/Test.sol";
 
 contract ShuffleGovernor is
     Governor,
@@ -23,6 +24,19 @@ contract ShuffleGovernor is
         GovernorVotes(_token)
         GovernorVotesQuorumFraction(1)
     {}
+    function propose(
+        address[] memory targets,
+        uint256[] memory values,
+        bytes[] memory calldatas,
+        string memory description
+    )
+        public
+        override
+        returns (uint256)
+    {
+        console.log("Proposing %s", msg.sender);
+        return super.propose(targets, values, calldatas, description);
+    }
 
     function votingDelay()
         public
