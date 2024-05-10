@@ -22,11 +22,10 @@ contract ShuffleTest is Test {
     function testVoteNewInstructor() public {
         address instructor = vm.addr(1);
 
-        vm.prank(vm.addr(1));
+        vm.startPrank(instructor);
         console.log("Instructor: %s", instructor);
         uint256 tokenBalance = token.balanceOf(instructor);
         console.log("Token balance: %d", tokenBalance);
-        vm.prank(instructor);
         token.delegate(instructor);
         uint256 votes = token.getVotes(instructor);
         console.log("Votes: %d", votes);
