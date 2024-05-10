@@ -1,8 +1,11 @@
 <template>
   <s-dialog v-if="!isConnected">
     <s-dialog-trigger as-child>
-      <s-button class="border border-foreground" variant="secondary">
-        Connect
+      <s-button
+        class="border border-foreground h-14 text-xl rounded-xl"
+        variant="secondary"
+      >
+        Connect your wallet
       </s-button>
     </s-dialog-trigger>
     <s-dialog-content class="sm:max-w-[1200px]">
@@ -34,7 +37,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { Connector } from "use-wagmi";
+import type { Connector } from 'use-wagmi';
 
 const { isConnected } = useAccount();
 
@@ -43,16 +46,16 @@ const { connect, connectors } = useConnect();
 
 const disconnectWallet = () => {
   disconnect();
-  useRouter().push("/");
+  useRouter().push('/');
 };
 
 const connectWallet = (connector: Connector) => {
   connect({ connector });
-  useRouter().push("/home");
+  useRouter().push('/home');
 };
 
 const displayedConnectors = computed(() => {
-  return connectors.value.filter((connector) => connector.id !== "injected");
+  return connectors.value.filter((connector) => connector.id !== 'injected');
 });
 </script>
 

@@ -1,9 +1,9 @@
+<!-- eslint-disable vue/html-self-closing -->
 <template>
-  <!-- TODO: transition doesnt work -->
-  <div class="w-full h-screen overflow-hidden">
+  <div class="w-full h-screen overflow-hidden relative">
     <div
       :class="{ 'is-active': !joinClicked }"
-      class="flex justify-center items-center overflow-hidden screen-content welcome-screen screen-content"
+      class="flex justify-center items-center screen-content z-20"
     >
       <img
         class="landing-gif"
@@ -11,34 +11,29 @@
         alt="Shuffle background"
       />
       <s-button
-        class="z-20 w-1/2 h-40 text-6xl border-primary border-4 rounded-xl"
+        class="z-20 w-1/2 h-40 text-6xl border-primary border-4 rounded-xl text-white"
         variant="secondary"
-        @click="joinClicked = true"
-        >JOIN US!</s-button
+        @click="toggleJoinClicked"
+        >JOIN THE SHUFFLESCAPE</s-button
       >
     </div>
     <div
       :class="{ 'is-active': joinClicked }"
-      class="screen-content join-screen"
+      class="flex screen-content join-screen"
     >
       <!-- TODO: remove the white border -->
       <img
-        class="joining-gif w-1/2"
+        class="joining-gif"
         src="/gifs/joining.gif"
         alt="Shuffle background"
       />
       <div class="flex flex-col w-1/2 bg-accent">
         <div class="flex flex-col gap-5 m-20">
-          <span class="text-5xl">Shuffle with us</span>
+          <span class="text-5xl font-thin">Shuffle with us</span>
           <span class="text-3xl">Join us today</span>
         </div>
         <div class="flex m-20 grow items-center">
-          <s-button
-            class="w-1/2 h-14 text-xl border-primary border-4 rounded-xl"
-            variant="secondary"
-            @click="$router.push('/home')"
-            >Connect your wallet</s-button
-          >
+          <connect-button />
         </div>
       </div>
     </div>
@@ -50,6 +45,10 @@ definePageMeta({
 });
 
 const joinClicked = ref(false);
+
+const toggleJoinClicked = () => {
+  joinClicked.value = !joinClicked.value;
+};
 </script>
 <style scoped>
 .landing-gif {
@@ -57,14 +56,20 @@ const joinClicked = ref(false);
 }
 
 .joining-gif {
-  @apply h-screen w-1/2 blur-sm;
+  @apply h-screen w-1/2 blur-sm scale-110;
 }
 
 .screen-content {
   @apply w-full h-screen;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 0.5s ease;
+  transform: translateY(100%);
 }
 
 .screen-content.is-active {
+  @apply z-20;
   transform: translateY(0);
 }
 
