@@ -6,9 +6,9 @@ const shuffleDAOContract = {
   abi: shuffleDAOABI,
 } as const;
 
-export const useDaoFactory = () => {
-  const { writeContract } = useWriteContract();
-
+export const useDaoFactory = ({
+  writeContract,
+}: ReturnType<typeof useWriteContract>) => {
   const addInstructor = (instructorAddress: Readonly<Address>, name: string) =>
     writeContract({
       ...shuffleDAOContract,
