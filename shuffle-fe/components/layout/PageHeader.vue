@@ -5,7 +5,7 @@
       <client-only>
         <s-dropdown-menu>
           <s-dropdown-menu-trigger as-child>
-            <s-button variant="icon">
+            <s-button variant="ghost">
               <icon
                 icon="radix-icons:moon"
                 class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-white"
@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Icon } from "@iconify/vue";
+import { Icon } from '@iconify/vue';
 
 const colorMode = useColorMode();
 </script>
