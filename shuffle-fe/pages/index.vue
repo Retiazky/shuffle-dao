@@ -33,12 +33,7 @@
           <span class="text-3xl">Join us today</span>
         </div>
         <div class="flex m-20 grow items-center">
-          <s-button
-            class="w-1/2 h-14 text-xl border-primary border-4 rounded-xl"
-            variant="secondary"
-            @click="$router.push('/home')"
-            >Connect your wallet</s-button
-          >
+          <connect-button />
         </div>
       </div>
     </div>
