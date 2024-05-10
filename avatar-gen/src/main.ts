@@ -1,3 +1,4 @@
+import { rect } from './rect'
 import './style.css'
 
 const WIDTH = 300
@@ -134,6 +135,11 @@ const body = {
   ],
 }
 
+const point = rect(ctx, { x: 0, y: 0, width: 10, height: 10, fill: '#FFF' })
+
+point.center().do((x, y) => {
+  console.log(x, y)
+})
 
 body.head[0](ctx, {})
 body.eyes[4](ctx, { eyebrowColor: '#BBB' })
