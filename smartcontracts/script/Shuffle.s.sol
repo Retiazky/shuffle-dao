@@ -12,17 +12,17 @@ contract ShuffleScript is Script {
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        address deployerAddress = vm.envAddress("ADDRESS");
+        address deployerAddress = vm.addr(deployerPrivateKey);
         vm.startBroadcast(deployerPrivateKey);
 
         ShuffleToken token = new ShuffleToken(deployerAddress);
-        console.log("Contract deployed to %s", address(token));
+        console.log("ShuffleToken deployed to %s", address(token));
 
         ShuffleGovernor governor = new ShuffleGovernor(token);
-        console.log("Contract deployed to %s", address(governor));
+        console.log("ShuffleGovernor deployed to %s", address(governor));
 
         ShuffleDAO dao = new ShuffleDAO(deployerAddress);
-        console.log("Contract deployed to %s", address(dao));
+        console.log("ShuffleDAO deployed to %s", address(dao));
 
         vm.stopBroadcast();
     }
