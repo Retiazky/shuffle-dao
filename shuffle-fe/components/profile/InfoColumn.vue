@@ -32,11 +32,7 @@ const shortenedWallet = computed(() => {
   return wallet.value;
 });
 
-const {
-  data: userVotingPower,
-  error: userVotingPowerErr,
-  status,
-} = useReadContract({
+const { data: userVotingPower, error: userVotingPowerErr } = useReadContract({
   ...shuffleTokenContract,
   functionName: "getVotes",
   args: [account.address.value!],
