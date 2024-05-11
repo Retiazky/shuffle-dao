@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="w-2/3 mx-auto">
     <page-title title="Upcoming Classes" />
-    <div class="grid grid-cols-4 gap-10 px-10 pb-10">
+    <div class="grid grid-cols-4 gap-3 px-10 pb-10">
       <class-card
         v-for="classInfo in upcommingClasses"
         :key="classInfo.date + classInfo.time + classInfo.level"
