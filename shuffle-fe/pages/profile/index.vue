@@ -5,7 +5,13 @@
       <profile-avatar-square />
       <profile-info-column />
     </div>
+    <div>
+      <section-title title="My Badges" />
+    </div>
+    <div>
+      <section-title title="My Purchase History" />
+      <profile-purchase-history />
+    </div>
   </div>
 </template>
 
-<script lang="ts" setup />
