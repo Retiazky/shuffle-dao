@@ -3,7 +3,7 @@ import './style.css'
 import { createRangeInput } from './util'
 
 const searchParams = new URLSearchParams(window.location.search)
-const seed = BigInt(searchParams.get('hash') ?? '0x3c2a06a4458f8150ff583B3fb0f553014E6B4Ab8')
+const seed = BigInt(searchParams.get('hash') ?? '0x' + crypto.randomUUID().toString().replaceAll('-', ''))
 
 const deriveFromSeed = (mod: number) => Number(seed % BigInt(mod))
 
@@ -27,10 +27,10 @@ const inputs = {
   eyebrowLeftHeight: () => deriveFromSeed(3) * 20, // createRangeInput('Left eyebrow height', 0, 40, 20),
   eyebrowRightHeight: () => deriveFromSeed(3) * 20, // createRangeInput('Right eyebrow height', 0, 40, 20),
   pupilsHorizontalOffset: () => deriveFromSeed(3) * 20, // createRangeInput('Horizontal pupils offset', 0, 40, 20),
-  hasCheckers: () => 0,// createRangeInput('Has checkers', 0, 1),
-  hasCrown: () => 0, // createRangeInput('Has crown', 0, 1),
-  hasSunglasses: () => 0, // createRangeInput('Has sunglasses', 0, 1),
-  hasBezier: () => 0, // createRangeInput('Has bezier', 0, 1),
+  hasCheckers: () => searchParams.has('checkers'), // createRangeInput('Has checkers', 0, 1),
+  hasCrown: () => searchParams.has('crown'), // createRangeInput('Has crown', 0, 1),
+  hasSunglasses: () => searchParams.has('sunglasses'), // createRangeInput('Has sunglasses', 0, 1),
+  hasBezier: () => searchParams.has('bezier'), // createRangeInput('Has bezier', 0, 1),
 }
 
 ;(function render() {
@@ -92,8 +92,12 @@ const inputs = {
     for (let n = 0; n < 30; n += 1) {
       let c = (n * 70) - 200
 
-      ;[290, 200, 170, 60].forEach((clr, idx) => {
-        ctx.strokeStyle = `hsl(${clr}, 90%, 48%)`
+      ;[
+        deriveFromSeed(290), 
+        (deriveFromSeed(290) + 90) % 360, 
+        (deriveFromSeed(290) + 180) % 360, 
+      ].forEach((clr, idx) => {
+        ctx.strokeStyle = `hsl(${clr}, 90%, 45%)`
         ctx.lineWidth = 10
         ctx.beginPath()
         ctx.moveTo(-300, c + (idx * 30))
@@ -156,10 +160,6 @@ const inputs = {
     p.gapX(LEGS.gap).do(p => rect(p.x, p.y, 50, -20, LEGS.bootsColor))
     p.gapX(-LEGS.gap).do(p => rect(p.x, p.y, -50, -20, LEGS.bootsColor))
   })
-  
-  requestAnimationFrame(render)
 })()
 
-
-document.body.appendChild(document.createElement('br'))
 document.body.appendChild(canvas)
