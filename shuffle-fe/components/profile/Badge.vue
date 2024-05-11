@@ -47,8 +47,11 @@
         </filter>
       </defs>
       <path id="curve" d="M 10,65 A 40,40 0 0,1 90,65" fill="transparent" />
-      <!-- <path id="curve" d="M 10,50 A 40,40 0 0,1 90,50" fill="transparent" /> -->
-      <text fill="white" :filter="'url(#shadow-' + badgeTypeClass + ')'">
+      <text
+        class="title-text"
+        fill="white"
+        :filter="'url(#shadow-' + badgeTypeClass + ')'"
+      >
         <textPath
           xlink:href="#curve"
           startOffset="50%"
@@ -61,6 +64,9 @@
         </textPath>
       </text>
     </svg>
+    <div class="collected-amount" :class="badgeTypeClass">
+      {{ props.badge.collectedAmount }}x
+    </div>
   </div>
 </template>
 
@@ -129,9 +135,26 @@ const badgeTypeClass = computed(() => {
   overflow: visible; /* Allows the SVG to display fully even if it goes beyond the bounds */
 }
 
-text {
+.title-text {
   font-size: 22px;
   dominant-baseline: middle;
   text-anchor: middle;
+}
+
+.collected-amount {
+  position: absolute;
+  top: 110px;
+  right: 30px;
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: black;
+  text-align: center;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 </style>
