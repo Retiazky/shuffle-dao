@@ -8,16 +8,16 @@ export enum ClassLevel {
 }
 
 export enum BadgeType {
-  CLASS = 'Class',
-  COURSE = 'Course',
-  WORKSHOP = 'Workshop',
-  SPECIAL = 'Special',
+  CLASS = "Class",
+  COURSE = "Course",
+  WORKSHOP = "Workshop",
+  SPECIAL = "Special",
 }
 
 export type Badge = {
   type: BadgeType;
   collectedAmount: number;
-}
+};
 
 export type ClassInfo = {
   date: string;
@@ -40,6 +40,9 @@ export interface Proposal {
   abstain: number;
   createdAt: string;
   description: string;
+  targets: Address[];
+  values: string[];
+  calldatas: string[];
 }
 
 export interface GraphQLResponse<T> {

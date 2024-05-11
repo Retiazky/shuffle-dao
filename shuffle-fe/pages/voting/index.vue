@@ -30,7 +30,7 @@
             I am abstain ({{ voting.abstain }})
           </s-button>
         </span>
-        <s-button v-else @click="executeProposal(voting.id)">EXECUTE</s-button>
+        <s-button v-else @click="executeProposal(voting)">EXECUTE</s-button>
       </li>
     </ul>
     <s-card class="w-1/2">
@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
-import { type Address, encodeFunctionData } from "viem";
+import { type Address, encodeFunctionData, keccak256, toHex } from "viem";
 import * as z from "zod";
 import { config } from "~/plugins/wagmi";
 import type { Proposal } from "~/types";
@@ -144,11 +144,17 @@ const delegate = () => {
   });
 };
 
-const executeProposal = (id: string) => {
+const executeProposal = (voting: Proposal) => {
+  const hashedDescription = keccak256(toHex(voting.description));
   writeContract({
     ...shuffleGovernorContract,
     functionName: "execute",
-    args: [BigInt(id)],
+    args: [
+      voting.targets,
+      voting.values.map(BigInt),
+      voting.calldatas as `0x${string}`[],
+      hashedDescription,
+    ],
   });
 };
 </script>

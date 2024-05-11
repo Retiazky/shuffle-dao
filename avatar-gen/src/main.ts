@@ -31,6 +31,7 @@ const inputs = {
   hasCrown: () => searchParams.has('crown'), // createRangeInput('Has crown', 0, 1),
   hasSunglasses: () => searchParams.has('sunglasses'), // createRangeInput('Has sunglasses', 0, 1),
   hasBezier: () => searchParams.has('bezier'), // createRangeInput('Has bezier', 0, 1),
+  numOfSBeziers: () => Number(searchParams.get('bezier_count') ?? 1),
 }
 
 ;(function render() {
@@ -89,22 +90,29 @@ const inputs = {
   }
   
   if (ROOT.bezier) {
-    for (let n = 0; n < 30; n += 1) {
-      let c = (n * 70) - 200
+    let c = -100
 
-      ;[
-        deriveFromSeed(290), 
-        (deriveFromSeed(290) + 90) % 360, 
-        (deriveFromSeed(290) + 180) % 360, 
-      ].forEach((clr, idx) => {
-        ctx.strokeStyle = `hsl(${clr}, 90%, 45%)`
-        ctx.lineWidth = 10
-        ctx.beginPath()
-        ctx.moveTo(-300, c + (idx * 30))
-        ctx.bezierCurveTo(200, 50 + c * 1,200, 500 + c * 2, root.right().x + 20, c + (idx * 30))
-        ctx.stroke()
-      })
-    }
+    Array.from({ length: inputs.numOfSBeziers() }, (_, idx) => (
+      (deriveFromSeed(360) + (idx * 45) % 360)// (idx * (360 / inputs.numOfSBeziers()))
+    )).forEach((clr, idx) => {
+      ctx.strokeStyle = `hsl(${clr}, 90%, 30%)`
+      ctx.lineWidth = 15
+      ctx.beginPath()
+      ctx.moveTo(-300, c + (idx * 110) - 10)
+      ctx.bezierCurveTo(200, 50 + c, 200, 500 + c * 2, root.right().x + 20, c + (idx * 110) - 10)
+      ctx.stroke()
+    })
+
+    Array.from({ length: inputs.numOfSBeziers() }, (_, idx) => (
+      (deriveFromSeed(360) + (idx * 45) % 360)// (idx * (360 / inputs.numOfSBeziers()))
+    )).forEach((clr, idx) => {
+      ctx.strokeStyle = `hsl(${clr}, 90%, 47%)`
+      ctx.lineWidth = 15
+      ctx.beginPath()
+      ctx.moveTo(-300, c + (idx * 110))
+      ctx.bezierCurveTo(200, 50 + c, 200, 500 + c * 2, root.right().x + 20, c + (idx * 110))
+      ctx.stroke()
+    })
   }
   
   const head = root.centerX().gap(-HEAD.width / 2, HEAD.top).do(from => {
