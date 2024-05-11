@@ -1,6 +1,5 @@
 import { VersatilePoint, useRect } from './rect'
 import './style.css'
-import { createRangeInput } from './util'
 
 const searchParams = new URLSearchParams(window.location.search)
 const seed = BigInt(searchParams.get('hash') ?? '0x' + crypto.randomUUID().toString().replaceAll('-', ''))
@@ -125,14 +124,14 @@ const inputs = {
     return rect(from.x, from.y, HEAD.width, HEAD.height, HEAD.color)
   })
   
-  const eye = head.gapY(30).centerX().gapX(head.x).do(p => {
+  head.gapY(30).centerX().gapX(head.x).do(p => {
     const leftEye = rect(p.x - 5, p.y, -EYE.width, EYE.height, '#FFF')
     
     leftEye.bottom().gap(PUPIL.horizontalOffset  - PUPIL.leftWidth * 2, leftEye.y).do(p => {
       rect(p.x, p.y, -PUPIL.leftWidth, -PUPIL.leftHeight, '#000')
     })
     
-    const leftEyebrow = rect(leftEye.x, leftEye.y, leftEye.width, EYE.eyebrowLeftHeight, EYE.eyebrowColor)
+    rect(leftEye.x, leftEye.y, leftEye.width, EYE.eyebrowLeftHeight, EYE.eyebrowColor)
     
     const rightEye = rect(p.x + 5, p.y, EYE.width, EYE.height, '#FFF')
     
@@ -140,7 +139,7 @@ const inputs = {
       rect(p.x, p.y, PUPIL.rightWidth, -PUPIL.rightHeight, '#000')
     })
     
-    const rightEyebrow = rect(rightEye.x, rightEye.y, rightEye.width, EYE.eyebrowRightHeight, EYE.eyebrowColor)
+    rect(rightEye.x, rightEye.y, rightEye.width, EYE.eyebrowRightHeight, EYE.eyebrowColor)
 
     if (HEAD.sunglasses) {
       const glasses = '🕶️'
@@ -150,7 +149,7 @@ const inputs = {
     }
   })
   
-  const mouth = head.bottom().centerX().gap(head.x, head.y).gapY(-30).do(l => {
+  head.bottom().centerX().gap(head.x, head.y).gapY(-30).do(l => {
     ctx.strokeStyle = `rgba(0, 0, 0, 0.4)`
     ctx.lineWidth = 4
     ctx.beginPath()
@@ -159,12 +158,12 @@ const inputs = {
     ctx.stroke()
   })
   
-  const legs = head.centerX().gap(head.x, head.height).do(s => {
+  head.centerX().gap(head.x, head.height).do(s => {
     rect(s.x - LEGS.gap - LEGS.width, s.y, LEGS.width, 1000, '#555')
     rect(s.x + LEGS.gap, s.y, LEGS.width, 1000, '#555')
   })
   
-  const boots = root.bottom().centerX().do(p => {
+  root.bottom().centerX().do(p => {
     p.gapX(LEGS.gap).do(p => rect(p.x, p.y, 50, -20, LEGS.bootsColor))
     p.gapX(-LEGS.gap).do(p => rect(p.x, p.y, -50, -20, LEGS.bootsColor))
   })
