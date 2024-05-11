@@ -164,6 +164,4 @@ const inputs = {
   requestAnimationFrame(render)
 })()
 
-
-document.body.appendChild(document.createElement('br'))
 document.body.appendChild(canvas)
