@@ -23,8 +23,41 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
 				})
 				proposals.set(proposalId.toString(), proposal)
 			}
-
+			if (log.address === GOVERNOR_CONTRACT && log.topics[0] === governorAbi.events.VoteCast.topic) {
+				const { proposalId, support, weight} = governorAbi.events.VoteCast.decode(log)
+				let proposal = proposals.get(proposalId.toString())
+				if (!proposal) {
+					proposal = await ctx.store.get(Proposal, proposalId.toString())
+					if (!proposal) {
+						throw new Error(`Proposal ${proposalId.toString()} not found`)
+					}
+					proposals.set(proposalId.toString(), proposal)
+				}
+				if (support==0){
+					proposal.against += weight;
+				} else if (support==1){
+					proposal.for += weight;
+				} else {
+					proposal.abstain += weight;
+				}
+				proposals.set(proposalId.toString(), proposal)
+			}
+			if (log.address === GOVERNOR_CONTRACT && log.topics[0] === governorAbi.events.ProposalExecuted.topic) {
+				const { proposalId } = governorAbi.events.ProposalExecuted.decode(log)
+				let proposal = proposals.get(proposalId.toString())
+				if (!proposal) {
+					proposal = await ctx.store.get(Proposal, proposalId.toString())
+					if (!proposal) {
+						throw new Error(`Proposal ${proposalId.toString()} not found`)
+					}
+					proposals.set(proposalId.toString(), proposal)
+				}
+				proposal.executed = true
+				proposals.set(proposalId.toString(), proposal)
+			}
         }
+
+
     }
 	await ctx.store.save([...proposals.values()])
 })

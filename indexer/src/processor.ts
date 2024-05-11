@@ -29,8 +29,8 @@ export const processor = new EvmBatchProcessor()
         from: 9829570,
     })
     .addLog({
-		address: [ GOVERNOR_CONTRACT]
-
+		address: [ GOVERNOR_CONTRACT],
+		topic0: [governorAbi.events.ProposalCreated.topic, governorAbi.events.VoteCast.topic, governorAbi.events.ProposalExecuted.topic],
 	  })
 
 export type Fields = EvmBatchProcessorFields<typeof processor>
