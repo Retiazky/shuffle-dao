@@ -92,8 +92,12 @@ const inputs = {
     for (let n = 0; n < 30; n += 1) {
       let c = (n * 70) - 200
 
-      ;[290, 200, 170, 60].forEach((clr, idx) => {
-        ctx.strokeStyle = `hsl(${clr}, 90%, 48%)`
+      ;[
+        deriveFromSeed(290), 
+        (deriveFromSeed(290) + 90) % 360, 
+        (deriveFromSeed(290) + 180) % 360, 
+      ].forEach((clr, idx) => {
+        ctx.strokeStyle = `hsl(${clr}, 90%, 45%)`
         ctx.lineWidth = 10
         ctx.beginPath()
         ctx.moveTo(-300, c + (idx * 30))
