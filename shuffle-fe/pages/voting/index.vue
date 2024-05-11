@@ -66,10 +66,11 @@
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
-import type { Address } from "viem";
+import { type Address, encodeFunctionData } from "viem";
 import * as z from "zod";
 import { config } from "~/plugins/wagmi";
 import { shuffleDAOContract } from "~/utils/factories/dao-factory";
+import { shuffleGovernorContract } from "~/utils/factories/governor-factory";
 
 interface VotingInfo {
   id: bigint;
@@ -127,10 +128,19 @@ const { writeContract, error, status } = useWriteContract({ config });
 
 const onCreateInstructor = createInstructorForm.handleSubmit((values) => {
   console.log(values);
-  writeContract({
-    ...shuffleDAOContract,
+  const targetAddresses: Address[] = [
+    "0x913625F0BaF4796629e14a487eC1AF6a921D4F18",
+  ];
+  const targetValues: bigint[] = [0n];
+  const callData = encodeFunctionData({
+    abi: shuffleDAOContract.abi,
     functionName: "addInstructor",
     args: [values.address as Address, values.name],
+  });
+  writeContract({
+    ...shuffleGovernorContract,
+    functionName: "propose",
+    args: [targetAddresses, targetValues, [callData], "Add instructor"],
   });
 });
 </script>
