@@ -1,57 +1,66 @@
 <template>
-  <div>
+  <div class="w-full flex flex-col items-center gap-2 px-2">
     <page-title title="Voting" />
-    <div class="w-full flex flex-col items-center gap-2">
-      <h2 class="text-2xl">Current topic: {{ votingInfo.name }}</h2>
-      <ul class="w-1/4 border p-2">
-        <li
-          v-for="category in votingInfo.categories"
-          :key="category.category"
-          class="flex justify-between gap-2 items-center w-full my-1"
-        >
-          <span>{{ category.category }}</span>
+    <ul class="w-full border p-2">
+      <li
+        v-for="voting in currentVotings"
+        :key="voting.id.toString()"
+        class="flex justify-between gap-2 items-center w-full my-1"
+      >
+        <span><b>Voting:</b> {{ voting.text }}</span>
+        <span class="flex w-1/2 justify-between gap-2">
+          <s-button class="flex-1" @click="voteForCategory(voting.id, 1)">
+            I am for ({{ voting.votes.for }})
+          </s-button>
+          <s-button
+            variant="destructive"
+            class="flex-1"
+            @click="voteForCategory(voting.id, 0)"
+          >
+            I am against ({{ voting.votes.against }})
+          </s-button>
           <s-button
             variant="outline"
-            class
-            @click="voteForCategory(category.category)"
+            class="flex-1"
+            @click="voteForCategory(voting.id, 2)"
           >
-            Vote ({{ category.votes }})
+            I am abstain ({{ voting.votes.abstain }})
           </s-button>
-        </li>
-      </ul>
-      <s-card class="w-1/2">
-        <s-card-header>
-          <s-card-title>Create instructor voting</s-card-title>
-          <s-card-description>Status: {{ status }}</s-card-description>
-        </s-card-header>
-        <s-card-content>
-          <form @submit="onCreateInstructor">
-            <s-form-field v-slot="{ componentField }" name="name">
-              <s-form-item>
-                <s-form-label>Name</s-form-label>
-                <s-form-control>
-                  <s-input v-bind="componentField" />
-                </s-form-control>
-                <s-form-description>Instructor name</s-form-description>
-                <s-form-message />
-              </s-form-item>
-            </s-form-field>
-            <s-form-field v-slot="{ componentField }" name="address">
-              <s-form-item>
-                <s-form-label>Address</s-form-label>
-                <s-form-control>
-                  <s-input v-bind="componentField" />
-                </s-form-control>
-                <s-form-description>Instructor address</s-form-description>
-                <s-form-message />
-              </s-form-item>
-            </s-form-field>
-            <s-button class="w-full" type="submit">Create</s-button>
-            <p v-if="error">{{ error }}</p>
-          </form>
-        </s-card-content>
-      </s-card>
-    </div>
+        </span>
+      </li>
+    </ul>
+    <s-card class="w-1/2">
+      <s-card-header>
+        <s-card-title>Create instructor voting</s-card-title>
+        <s-card-description>Status: {{ status }}</s-card-description>
+      </s-card-header>
+      <s-card-content>
+        <form @submit="onCreateInstructor">
+          <s-form-field v-slot="{ componentField }" name="name">
+            <s-form-item>
+              <s-form-label>Name</s-form-label>
+              <s-form-control>
+                <s-input v-bind="componentField" />
+              </s-form-control>
+              <s-form-description>Instructor name</s-form-description>
+              <s-form-message />
+            </s-form-item>
+          </s-form-field>
+          <s-form-field v-slot="{ componentField }" name="address">
+            <s-form-item>
+              <s-form-label>Address</s-form-label>
+              <s-form-control>
+                <s-input v-bind="componentField" />
+              </s-form-control>
+              <s-form-description>Instructor address</s-form-description>
+              <s-form-message />
+            </s-form-item>
+          </s-form-field>
+          <s-button class="w-full mt-2" type="submit">Create</s-button>
+          <p v-if="error">{{ error }}</p>
+        </form>
+      </s-card-content>
+    </s-card>
   </div>
 </template>
 <script setup lang="ts">
@@ -62,29 +71,44 @@ import * as z from "zod";
 import { config } from "~/plugins/wagmi";
 import { shuffleDAOContract } from "~/utils/factories/dao-factory";
 
-interface CategoryVotes {
-  category: string;
-  votes: number;
-}
-
 interface VotingInfo {
-  name: string;
-  categories: CategoryVotes[];
+  id: bigint;
+  text: string;
+  votes: {
+    for: bigint;
+    against: bigint;
+    abstain: bigint;
+  };
 }
 
-const votingInfo = ref<VotingInfo>({
-  name: "New lector",
-  categories: [
-    { category: "Lucia Bandova", votes: 0 },
-    { category: "Danka Matica", votes: 0 },
-  ],
-});
+const currentVotings = ref<VotingInfo[]>([
+  {
+    id: 0n,
+    text: "New lector: Lucia Mandova",
+    votes: {
+      for: 10n,
+      against: 2n,
+      abstain: 1n,
+    },
+  },
+  {
+    id: 1n,
+    text: "Voting 2",
+    votes: {
+      for: 5n,
+      against: 3n,
+      abstain: 2n,
+    },
+  },
+]);
 
-const voteForCategory = (category: string) => {
-  const categoryIndex = votingInfo.value.categories.findIndex(
-    (c) => c.category === category
-  );
-  votingInfo.value.categories[categoryIndex].votes++;
+/**
+ * Voting info
+ * @param id Voting ID
+ * @param vote 0 - against, 1 - for, 2 - abstain
+ */
+const voteForCategory = (votingId: bigint, vote: 0 | 1 | 2) => {
+  console.log(votingId, vote);
 };
 
 const createInstructorSchema = toTypedSchema(

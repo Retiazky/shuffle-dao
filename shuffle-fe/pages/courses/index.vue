@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col justify-center items-center">
-    <h1>Courses</h1>
+    <page-title title="Courses" />
     <s-card class="w-1/2">
       <s-card-header>
         <s-card-title>Create course</s-card-title>
@@ -25,7 +25,7 @@
             <s-form-item>
               <s-form-label>Start date</s-form-label>
               <s-form-control class="flex flex-col items-center">
-                <input type="date" v-bind="componentField" />
+                <s-input type="date" v-bind="componentField" />
               </s-form-control>
               <s-form-description>Course start date</s-form-description>
               <s-form-message />
@@ -35,7 +35,7 @@
             <s-form-item>
               <s-form-label>End date</s-form-label>
               <s-form-control class="flex flex-col items-center">
-                <input type="date" v-bind="componentField" />
+                <s-input type="date" v-bind="componentField" />
               </s-form-control>
               <s-form-description>Course end date</s-form-description>
               <s-form-message />
@@ -91,7 +91,7 @@
               <s-form-message />
             </s-form-item>
           </s-form-field>
-          <s-button class="w-full" type="submit">Submit</s-button>
+          <s-button class="w-full mt-2" type="submit">Submit</s-button>
         </form>
       </s-card-content>
     </s-card>
