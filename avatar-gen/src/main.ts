@@ -90,7 +90,18 @@ const inputs = {
   }
   
   if (ROOT.bezier) {
-    let c = - 100
+    let c = -100
+
+    Array.from({ length: inputs.numOfSBeziers() }, (_, idx) => (
+      (deriveFromSeed(360) + (idx * 45) % 360)// (idx * (360 / inputs.numOfSBeziers()))
+    )).forEach((clr, idx) => {
+      ctx.strokeStyle = `hsl(${clr}, 90%, 30%)`
+      ctx.lineWidth = 15
+      ctx.beginPath()
+      ctx.moveTo(-300, c + (idx * 110) - 10)
+      ctx.bezierCurveTo(200, 50 + c, 200, 500 + c * 2, root.right().x + 20, c + (idx * 110) - 10)
+      ctx.stroke()
+    })
 
     Array.from({ length: inputs.numOfSBeziers() }, (_, idx) => (
       (deriveFromSeed(360) + (idx * 45) % 360)// (idx * (360 / inputs.numOfSBeziers()))
