@@ -1,7 +1,12 @@
-type Burn @entity {
-  id: ID!
-  block: Int!
-  address: String! @index
-  value: BigInt!
-  txHash: String!
+
+type Proposal @entity {
+	id: ID!
+	proposer: String! @index
+	description: String!
+	against: BigInt!
+	for: BigInt!
+	abstain: BigInt!
+	createdAt: Int!
+	voteStart: BigInt!
+	voteEnd: BigInt!
 }

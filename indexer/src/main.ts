@@ -1,29 +1,31 @@
 import {TypeormDatabase} from '@subsquid/typeorm-store'
-import {Burn} from './model'
 import {processor} from './processor'
+import { Proposal } from './model'
+import { GOVERNOR_CONTRACT } from './processor'
+import * as governorAbi from './abi/governor'
 
 processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
-    const burns: Burn[] = []
+    const proposals: Map<string, Proposal> = new Map()
     for (let c of ctx.blocks) {
-        for (let tx of c.transactions) {
-            // decode and normalize the tx data
-            burns.push(
-                new Burn({
-                    id: tx.id,
-                    block: c.header.height,
-                    address: tx.from,
-                    value: tx.value,
-                    txHash: tx.hash,
-                })
-            )
+        for (let log of c.logs) {
+			if (log.address === GOVERNOR_CONTRACT && log.topic === governorAbi.events.ProposalCreated.topic) {
+				const { proposalId, proposer, targets, values, signatures, calldatas, voteStart, voteEnd, description } = governorAbi.events.ProposalCreated.decode(log)
+				const proposal = new Proposal({
+					id: proposalId.toString(),
+					proposer,
+					description,
+					voteStart,
+					voteEnd,
+					for: 0n,
+					against: 0n,
+					abstain: 0n
+				})
+				proposals.set(proposalId.toString(), proposal)
+			}
+
         }
     }
-    // apply vectorized transformations and aggregations
-    const burned = burns.reduce((acc, b) => acc + b.value, 0n) / 1_000_000_000n
-    const startBlock = ctx.blocks.at(0)?.header.height
-    const endBlock = ctx.blocks.at(-1)?.header.height
-    ctx.log.info(`Burned ${burned} Gwei from ${startBlock} to ${endBlock}`)
-
-    // upsert batches of entities with batch-optimized ctx.store.save
-    await ctx.store.upsert(burns)
+	await ctx.store.save([...proposals.values()])
 })
+
+

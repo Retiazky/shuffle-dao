@@ -1,4 +1,5 @@
 import {assertNotNull} from '@subsquid/util-internal'
+import * as governorAbi from './abi/governor'
 import {
     BlockHeader,
     DataHandlerContext,
@@ -8,21 +9,15 @@ import {
     Transaction as _Transaction,
 } from '@subsquid/evm-processor'
 
+export const GOVERNOR_CONTRACT = '0x'
+
 export const processor = new EvmBatchProcessor()
-    // Lookup archive by the network name in Subsquid registry
-    // See https://docs.subsquid.io/evm-indexing/supported-networks/
-    .setGateway('https://v2.archive.subsquid.io/network/ethereum-mainnet')
-    // Chain RPC endpoint is required for
-    //  - indexing unfinalized blocks https://docs.subsquid.io/basics/unfinalized-blocks/
-    //  - querying the contract state https://docs.subsquid.io/evm-indexing/query-state/
+    .setGateway('https://v2.archive.subsquid.io/network/base-sepolia')
     .setRpcEndpoint({
-        // Set the URL via .env for local runs or via secrets when deploying to Subsquid Cloud
-        // https://docs.subsquid.io/deploy-squid/env-variables/
-        url: assertNotNull(process.env.RPC_ENDPOINT),
-        // More RPC connection options at https://docs.subsquid.io/evm-indexing/configuration/initialization/#set-data-source
+        url: assertNotNull('https://rpc.ankr.com/base_sepolia'),
         rateLimit: 10
     })
-    .setFinalityConfirmation(75)
+    .setFinalityConfirmation(10)
     .setFields({
         transaction: {
             from: true,
@@ -33,9 +28,11 @@ export const processor = new EvmBatchProcessor()
     .setBlockRange({
         from: 0,
     })
-    .addTransaction({
-        to: ['0x0000000000000000000000000000000000000000'],
-    })
+    .addLog({
+		address: [ GOVERNOR_CONTRACT],
+		topic0: [ governorAbi.events.VoteCast.topic, governorAbi.events.ProposalCreated.topic,
+			governorAbi.events.ProposalExecuted.topic]
+	  })
 
 export type Fields = EvmBatchProcessorFields<typeof processor>
 export type Block = BlockHeader<Fields>
