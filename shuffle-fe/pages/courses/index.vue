@@ -107,12 +107,11 @@ import { config } from "~/plugins/wagmi";
 import type { Instructor } from "~/types";
 import { shuffleDAOContract } from "~/utils/factories/dao-factory";
 
-const instructors = ref<Instructor[]>([
-  {
-    name: "Lucia Mandova",
-    address: "0xFB8A366970EB2E97C6666d3A3EcB104872901D77",
-  },
-]);
+const instructors = ref<Instructor[]>([]);
+
+onMounted(async () => {
+  instructors.value = await $fetch("/api/lectors");
+});
 
 const createCourseSchema = toTypedSchema(
   z

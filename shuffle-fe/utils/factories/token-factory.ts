@@ -1,6 +1,6 @@
 import { abi as shuffleTokenABI } from "@/abi/ShuffleToken";
 
 export const shuffleTokenContract = {
-  address: "0xaA731542a7396D81036D6afBa14ede3A41Cc0F1f",
+  address: "0x748e0DCb80b1dF2E3aD3268cB84c547E5a34dbCD",
   abi: shuffleTokenABI,
 } as const;

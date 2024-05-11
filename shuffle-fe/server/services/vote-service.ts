@@ -1,6 +1,5 @@
 import type { GraphQLResponse, Proposal } from "~/types";
-
-const API_BASE = "http://localhost:4350";
+import { API_BASE } from "../utils";
 
 export function voteService() {
   const getProposals = async () => {
