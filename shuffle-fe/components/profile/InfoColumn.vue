@@ -6,7 +6,9 @@
     </div>
     <div class="flex gap-2 items-center">
       <span>Voting Power: </span>
-      <span>{{ votingPower }}</span>
+      <span>
+        {{ userVotingPowerErr ? userVotingPowerErr : userVotingPower }}
+      </span>
     </div>
     <div class="flex gap-2 items-center">
       <span>ShuffTokens: </span>
@@ -16,11 +18,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref } from "vue";
+import { shuffleTokenContract } from "~/utils/factories/token-factory";
 const account = useAccount();
 const wallet = account.address;
 // TODO: Get from indexer
-const votingPower = ref(2);
 const shuffTokens = ref(20);
 
 const shortenedWallet = computed(() => {
@@ -28,6 +30,12 @@ const shortenedWallet = computed(() => {
     return `${wallet.value.slice(0, 6)}...${wallet.value.slice(-4)}`;
   }
   return wallet.value;
+});
+
+const { data: userVotingPower, error: userVotingPowerErr } = useReadContract({
+  ...shuffleTokenContract,
+  functionName: "getVotes",
+  args: [account.address.value!],
 });
 </script>
 

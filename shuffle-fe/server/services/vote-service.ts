@@ -17,17 +17,17 @@ export function voteService() {
         body: JSON.stringify({
           query: `
                     query {
-                        proposals(where: {executed_eq: false, voteEnd_gt: "${currentTime}"}) {
-                            proposer
-                            voteEnd
-                            voteStart
-                            id
-                            for
-                            against
-                            abstain
-                            createdAt
-                            description
-                          }
+                      proposals(where: {executed_eq: false, AND: {voteEnd_gt: "${currentTime}", OR: {for_gt: "1000000000000000000000", AND: {for_gt: against}}}}) {
+                        proposer
+                        voteEnd
+                        voteStart
+                        id
+                        for
+                        against
+                        abstain
+                        createdAt
+                        description
+                      }
                     }
                 `,
         }),
