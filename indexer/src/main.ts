@@ -1,20 +1,27 @@
 import {TypeormDatabase} from '@subsquid/typeorm-store'
-import {processor, GOVERNOR_CONTRACT} from './processor'
-import { Proposal } from './model'
+import {processor, GOVERNOR_CONTRACT, DAO_CONTRACT} from './processor'
+import { Instructor, Lesson, Participant, Proposal } from './model'
 import * as governorAbi from './abi/governor'
+import * as daoAbi from './abi/shuffleDAO'
 
 processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
     const proposals: Map<string, Proposal> = new Map()
+	const instructors: Map<string, Instructor> = new Map()
+	const lessons: Map<string, Lesson> = new Map()
+	const participants: Participant[] = []
     for (let c of ctx.blocks) {
         for (let log of c.logs) {
 			if (log.address === GOVERNOR_CONTRACT && log.topics[0] === governorAbi.events.ProposalCreated.topic) {
-				const { proposalId, proposer, voteStart, voteEnd, description } = governorAbi.events.ProposalCreated.decode(log)
+				const { proposalId, proposer, voteStart, voteEnd, description, targets, values, calldatas} = governorAbi.events.ProposalCreated.decode(log)
 				const proposal = new Proposal({
 					id: proposalId.toString(),
 					proposer,
 					description,
 					voteStart,
 					voteEnd,
+					targets,
+					values: values.map(v => v.toString()),
+					calldatas,
 					for: 0n,
 					against: 0n,
 					abstain: 0n,
@@ -55,11 +62,58 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
 				proposal.executed = true
 				proposals.set(proposalId.toString(), proposal)
 			}
+			if(log.address === DAO_CONTRACT && log.topics[0] === daoAbi.events.InstructorSet.topic){
+				const { instructor, name, status } = daoAbi.events.InstructorSet.decode(log)
+				const newInstructor = new Instructor({
+					id: instructor,
+					name,
+					active: status,
+				})
+				instructors.set(instructor, newInstructor)
+			}
+			if(log.address === DAO_CONTRACT && log.topics[0] === daoAbi.events.LessonCreated.topic){
+				const { id, instructor, startsAt, endsAt, maxParticipants, style, fee } = daoAbi.events.LessonCreated.decode(log)
+				let instructorEntity = instructors.get(instructor)
+				if (!instructorEntity) {
+					instructorEntity = await ctx.store.get(Instructor, instructor)
+					if (!instructorEntity) {
+						throw new Error(`Instructor ${instructor} not found`)
+					}
+					instructors.set(instructor, instructorEntity)
+				}
+				const newLesson = new Lesson({
+					id: id.toString(),
+					instructor: instructorEntity,
+					startsAt,
+					endsAt,
+					maxParticipants,
+					style,
+					fee,
+				})
+				lessons.set(id.toString(), newLesson)
+			}
+			if(log.address === DAO_CONTRACT && log.topics[0] === daoAbi.events.ParticipantRegistered.topic){{
+				const { id, participant } = daoAbi.events.ParticipantRegistered.decode(log)
+				let lessonEntity = lessons.get(id.toString())
+				if (!lessonEntity) {
+					lessonEntity = await ctx.store.get(Lesson, id.toString())
+					if (!lessonEntity) {
+						throw new Error(`Lesson ${id.toString()} not found`)
+					}
+					lessons.set(id.toString(), lessonEntity)
+				}
+				let participantEntity = new Participant({
+					id: participant,
+					lesson: lessonEntity,
+				})
+				participants.push(participantEntity)
+			}
         }
-
-
-    }
+    }}
 	await ctx.store.save([...proposals.values()])
+	await ctx.store.save([...instructors.values()])
+	await ctx.store.save([...lessons.values()])
+	await ctx.store.save(participants)
 })
 
 

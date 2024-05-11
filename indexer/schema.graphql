@@ -9,6 +9,9 @@ type Proposal @entity {
 	voteStart: BigInt!
 	voteEnd: BigInt!
 	executed: Boolean!
+	targets: [String]!
+	values: [String]!
+	calldatas: [String]!
 }
 
 type Instructor @entity {

@@ -8,7 +8,10 @@
         class="flex justify-between gap-2 items-center w-full my-1"
       >
         <span><b>Voting:</b> {{ voting.description }}</span>
-        <span class="flex w-1/2 justify-between gap-2">
+        <span
+          v-if="voting.for < 1000000000000000000000"
+          class="flex w-1/2 justify-between gap-2"
+        >
           <s-button class="flex-1" @click="voteForCategory(voting.id, 1)">
             I am for ({{ voting.for }})
           </s-button>
@@ -27,6 +30,7 @@
             I am abstain ({{ voting.abstain }})
           </s-button>
         </span>
+        <s-button v-else @click="executeProposal(voting.id)">EXECUTE</s-button>
       </li>
     </ul>
     <s-card class="w-1/2">
@@ -137,6 +141,14 @@ const delegate = () => {
     ...shuffleTokenContract,
     functionName: "delegate",
     args: [address.value as Address],
+  });
+};
+
+const executeProposal = (id: string) => {
+  writeContract({
+    ...shuffleGovernorContract,
+    functionName: "execute",
+    args: [BigInt(id)],
   });
 };
 </script>
