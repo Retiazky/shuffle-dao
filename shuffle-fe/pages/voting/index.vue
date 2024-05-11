@@ -61,6 +61,7 @@
         </form>
       </s-card-content>
     </s-card>
+    <s-button class="w-1/2" @click="delegate">Delegate</s-button>
   </div>
 </template>
 <script setup lang="ts">
@@ -71,6 +72,7 @@ import * as z from "zod";
 import { config } from "~/plugins/wagmi";
 import { shuffleDAOContract } from "~/utils/factories/dao-factory";
 import { shuffleGovernorContract } from "~/utils/factories/governor-factory";
+import { shuffleTokenContract } from "~/utils/factories/token-factory";
 
 interface VotingInfo {
   id: bigint;
@@ -128,19 +130,29 @@ const { writeContract, error, status } = useWriteContract({ config });
 
 const onCreateInstructor = createInstructorForm.handleSubmit((values) => {
   console.log(values);
-  const targetAddresses: Address[] = [
-    "0x913625F0BaF4796629e14a487eC1AF6a921D4F18",
-  ];
+  const targetAddresses: Address[] = [shuffleDAOContract.address as Address];
   const targetValues: bigint[] = [0n];
-  const callData = encodeFunctionData({
-    abi: shuffleDAOContract.abi,
-    functionName: "addInstructor",
-    args: [values.address as Address, values.name],
-  });
+  const callDatas = [
+    encodeFunctionData({
+      abi: shuffleDAOContract.abi,
+      functionName: "addInstructor",
+      args: [values.address as Address, values.name],
+    }),
+  ];
   writeContract({
     ...shuffleGovernorContract,
     functionName: "propose",
-    args: [targetAddresses, targetValues, [callData], "Add instructor"],
+    args: [targetAddresses, targetValues, callDatas, "Add instructor"],
   });
 });
+
+const { address } = useAccount();
+
+const delegate = () => {
+  writeContract({
+    ...shuffleTokenContract,
+    functionName: "delegate",
+    args: [address.value as Address],
+  });
+};
 </script>

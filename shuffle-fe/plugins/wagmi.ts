@@ -1,13 +1,12 @@
 import { UseWagmiPlugin, createConfig, http } from "use-wagmi";
-import { mainnet, sepolia } from "use-wagmi/chains";
+import { baseSepolia } from "use-wagmi/chains";
 import { injected } from "use-wagmi/connectors";
 
 export const config = createConfig({
-  chains: [mainnet, sepolia],
+  chains: [baseSepolia],
   connectors: [injected()],
   transports: {
-    [mainnet.id]: http(),
-    [sepolia.id]: http(),
+    [baseSepolia.id]: http(),
   },
 });
 export default defineNuxtPlugin((nuxtApp) => {
