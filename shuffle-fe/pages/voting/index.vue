@@ -8,7 +8,7 @@
         class="flex justify-between gap-2 items-center w-full my-1"
       >
         <span><b>Voting:</b> {{ voting.description }}</span>
-        <span> Voting ends in {{ getFormatedDate(voting.voteEnd) }} </span>
+        <span> Voting ends in {{ getFormattedDate(voting.voteEnd) }} </span>
         <span
           v-if="voting.for < 1000000000000000000000"
           class="flex w-1/2 justify-between gap-2"
@@ -35,8 +35,9 @@
           v-else
           :disabled="!canExecute(voting)"
           @click="executeProposal(voting)"
-          >EXECUTE</s-button
         >
+          EXECUTE
+        </s-button>
       </li>
     </ul>
     <s-card class="w-1/2">
@@ -128,7 +129,7 @@ const createInstructorSchema = toTypedSchema(
   })
 );
 
-const getFormatedDate = (timeEnd: string) => {
+const getFormattedDate = (timeEnd: string) => {
   const time = Number(timeEnd + "000");
   const date = new Date(time);
   return `${date.getDate()}.${
