@@ -6,6 +6,7 @@ import {console} from "forge-std/console.sol";
 import {ShuffleToken} from "src/ShuffleToken.sol";
 import {ShuffleGovernor} from "src/ShuffleGovernor.sol";
 import {ShuffleDAO} from "src/ShuffleDAO.sol";
+import {Badge} from "src/Badge.sol";
 
 contract ShuffleScript is Script {
     function setUp() public {}
@@ -23,6 +24,9 @@ contract ShuffleScript is Script {
 
         ShuffleDAO dao = new ShuffleDAO(address(governor));
         console.log("ShuffleDAO deployed to %s", address(dao));
+
+        Badge badge = new Badge(address(dao), "");
+        console.log("Badge deployed to %s", address(badge));
 
         vm.stopBroadcast();
     }

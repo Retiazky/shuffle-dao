@@ -10,8 +10,8 @@ import {
     Transaction as _Transaction,
 } from '@subsquid/evm-processor'
 
-export const GOVERNOR_CONTRACT = '0x30dbEcc57bd06B780d5274a2e74527324f372E9b'.toLowerCase()
-export const DAO_CONTRACT = '0xa08CB97D2aA395aAAe66Ab6579c630e2cAB077c9'.toLowerCase()
+export const GOVERNOR_CONTRACT = '0x85D1cd2C9c3F3C751D94eE09205f9a210056317D'.toLowerCase()
+export const DAO_CONTRACT = '0x4C2a1Bf6d7a0cFd082587d0C376530d1c28da0e7'.toLowerCase()
 
 export const processor = new EvmBatchProcessor()
     .setGateway('https://v2.archive.subsquid.io/network/base-sepolia')
