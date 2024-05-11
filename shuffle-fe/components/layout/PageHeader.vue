@@ -4,33 +4,24 @@
     <page-navigation />
     <span class="flex justify-end items-center gap">
       <client-only>
-        <s-dropdown-menu>
-          <s-dropdown-menu-trigger as-child>
-            <s-button variant="ghost">
-              <icon
-                icon="radix-icons:moon"
-                class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
-              />
-              <icon
-                icon="radix-icons:sun"
-                class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
-              />
-              <span class="sr-only">Toggle theme</span>
-            </s-button>
-          </s-dropdown-menu-trigger>
-          <s-dropdown-menu-content align="end">
-            <s-dropdown-menu-item @click="colorMode.preference = 'light'">
-              Light
-            </s-dropdown-menu-item>
-            <s-dropdown-menu-item @click="colorMode.preference = 'dark'">
-              Dark
-            </s-dropdown-menu-item>
-            <s-dropdown-menu-item @click="colorMode.preference = 'system'">
-              System
-            </s-dropdown-menu-item>
-          </s-dropdown-menu-content>
-        </s-dropdown-menu>
-
+        <s-button
+          variant="link"
+          class="text-foreground"
+          @click="toggleColorMode"
+        >
+          <icon
+            v-if="colorMode.preference === 'light'"
+            height="24"
+            class="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+            icon="radix-icons:moon"
+          />
+          <icon
+            v-else
+            icon="radix-icons:sun"
+            height="24"
+            class="rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+          />
+        </s-button>
         <connect-button class="w-1/3" />
       </client-only>
     </span>
@@ -38,10 +29,14 @@
 </template>
 
 <script lang="ts" setup>
-import PageNavigation from '@/components/layout/PageNavigation.vue';
-import { Icon } from '@iconify/vue';
+import PageNavigation from "@/components/layout/PageNavigation.vue";
+import { Icon } from "@iconify/vue";
 
 const colorMode = useColorMode();
+colorMode.preference = "light";
+const toggleColorMode = () => {
+  colorMode.preference = colorMode.preference === "light" ? "dark" : "light";
+};
 </script>
 
 <style></style>
