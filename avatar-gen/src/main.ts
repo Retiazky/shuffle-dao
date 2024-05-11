@@ -1,4 +1,4 @@
-import { VersatilePoint, rect } from './rect'
+import { VersatilePoint, useRect } from './rect'
 import './style.css'
 
 const WIDTH = 400
@@ -10,6 +10,7 @@ canvas.height = HEIGHT
 canvas.style.border = '1px solid black'
 
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+const rect = useRect(ctx)
 
 const HEAD = {
   width: 200,
@@ -32,9 +33,9 @@ const root = new VersatilePoint(0, 0, WIDTH, HEIGHT)
 
 const heads = [
   (ctx: CanvasRenderingContext2D, params: {}) => (
-    root.gap(80, 60).do(from => (
+    root.gap(80, 200).do(from => (
       root.right().gapX(-80).gapY(HEAD.height).do(to => (
-        rect(ctx, { fill: '#DDD', x: from.x, y: from.y, width: to.x - from.x, height: HEAD.height })
+        rect(from.x, from.y, to.x - from.x, HEAD.height, '#DDD',)
       ))
     ))
   )
@@ -44,19 +45,19 @@ const selectedHead = heads[0](ctx, {})
 
 const eyes = [
   (ctx: CanvasRenderingContext2D, params: { eyebrowColor: string }) => (
-    selectedHead.gapY(30).centerX().do(p => {
-      const leftEye = rect(ctx, { fill: '#FFF', x: selectedHead.x + p.x - 5, y: p.y, width: -EYE.width, height: EYE.height,})
-      const leftEyebrow = rect(ctx, { fill: '#BBB', x: leftEye.x, y: leftEye.y, width: leftEye.width, height: leftEye.height * (2 / 3) })
+    selectedHead.gapY(30).centerX().gapX(selectedHead.x).do(p => {
+      const leftEye = rect(p.x - 5, p.y, -EYE.width, EYE.height, '#FFF',)
+      const leftEyebrow = rect(leftEye.x, leftEye.y, leftEye.width, leftEye.height * (2 / 3), params.eyebrowColor,)
 
       leftEyebrow.bottom().gap(-PUPIL.width, leftEyebrow.y).do(p => {
-        rect(ctx, { fill: '#000', x: p.x, y: p.y, width: -PUPIL.width, height: PUPIL.height })
+        rect(p.x, p.y, -PUPIL.width, PUPIL.height, '#000',)
       })
 
-      const rightEye = rect(ctx, { fill: '#FFF', x: selectedHead.x + p.x + 5, y: p.y, width: EYE.width, height: EYE.height })
-      const rightEyebrow = rect(ctx, { fill: '#BBB', x: rightEye.x, y: rightEye.y, width: rightEye.width, height: rightEye.height * (2 / 3) })
+      const rightEye = rect(p.x + 5, p.y, EYE.width, EYE.height, '#FFF',)
+      const rightEyebrow = rect(rightEye.x, rightEye.y, rightEye.width, rightEye.height * (2 / 3), params.eyebrowColor,)
 
       rightEyebrow.bottom().gap(PUPIL.width, rightEyebrow.y).do(p => {
-        rect(ctx, { fill: '#000', x: p.x, y: p.y, width: PUPIL.width, height: PUPIL.height })
+        rect(p.x, p.y, PUPIL.width, PUPIL.height, '#000',)
       })
     })
   ),
@@ -67,8 +68,8 @@ const selectedEye = eyes[0](ctx, { eyebrowColor: '#BBB' })
 const mouth = [
   (ctx: CanvasRenderingContext2D, params: {}) => {
     selectedHead.bottom().centerX().gap(selectedHead.x, selectedHead.y).gapY(-30).do(l => {
-      rect(ctx, { fill: '#000', x: l.x, y: l.y, width: 60, height: 3 })
-      rect(ctx, { fill: '#000', x: l.x, y: l.y, width: -60, height: 3,})
+      rect(l.x, l.y, 60, 3, '#000')
+      rect(l.x, l.y, -60, 3, '#000')
     })
   }
 ]
@@ -77,14 +78,16 @@ const selectedMouth = mouth[0](ctx, {})
 
 const legs = [
   (ctx: CanvasRenderingContext2D, params: {}) => {
-    // Legs
-    ctx.fillStyle = '#222'
-    ctx.fillRect(WIDTH / 2 + 15, HEAD.height + HEAD.top, -3, 1000)
-    ctx.fillRect(WIDTH / 2 - 15, HEAD.height + HEAD.top, 3, 1000)
+    selectedHead.centerX().gap(selectedHead.x, selectedHead.height).do(s => {
+      rect(s.x - 10, s.y, 3, 1000, '#777')
+      rect(s.x + 10, s.y, 3, 1000, '#777')
+    })
   }
 ]
 
-const point = rect(ctx, { x: 0, y: 0, width: 10, height: 10, fill: '#FFF' })
+legs[0](ctx, {})
+
+const point = rect(0, 0, 10, 10, '#FFF')
 
 
 document.body.appendChild(canvas)
