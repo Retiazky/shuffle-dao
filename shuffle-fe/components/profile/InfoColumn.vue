@@ -12,18 +12,17 @@
     </div>
     <div class="flex gap-2 items-center">
       <span>ShuffTokens: </span>
-      <span>{{ shuffTokens }}</span>
+      <span>
+        {{ shuffTokenErr ? shuffTokenErr : shuffTokens }}
+      </span>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
-import { shuffleTokenContract } from "~/utils/factories/token-factory";
+import { shuffleTokenContract } from '~/utils/factories/token-factory';
 const account = useAccount();
 const wallet = account.address;
-// TODO: Get from indexer
-const shuffTokens = ref(20);
 
 const shortenedWallet = computed(() => {
   if (wallet.value && wallet.value.length > 10) {
@@ -34,7 +33,13 @@ const shortenedWallet = computed(() => {
 
 const { data: userVotingPower, error: userVotingPowerErr } = useReadContract({
   ...shuffleTokenContract,
-  functionName: "getVotes",
+  functionName: 'getVotes',
+  args: [account.address.value!],
+});
+
+const { data: shuffTokens, error: shuffTokenErr } = useReadContract({
+  ...shuffleTokenContract,
+  functionName: 'balanceOf',
   args: [account.address.value!],
 });
 </script>
