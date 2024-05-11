@@ -12,11 +12,11 @@ const wallet = account.address.value;
 const params = new URLSearchParams()
 params.append('hash', String(wallet))
 
-const hasCrown = !true
-const hasSunglasses = !true
-const hasCheckeredBackground = !true
-const hasBezierCurve = !true
-const bezierCurvesCount = 6
+const hasCrown = true
+const hasSunglasses = true
+const hasCheckeredBackground = true
+const hasBezierCurve = true
+const bezierCurvesCount = 4
 
 if (hasCrown) {
   params.append('crown', 'true')
