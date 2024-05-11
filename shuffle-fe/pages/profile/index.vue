@@ -1,8 +1,9 @@
 <template>
-  <div class="pb-10">
+  <div class="flex flex-col pb-10 w-1/2 mx-auto items-center">
     <page-title title="Profile" />
-    <div class="flex items-center gap-4 pl-10">
-      <profile-avatar-square />
+    <profile-avatar-square />
+    <div>
+      <section-title title="My Info" />
       <profile-info-column />
     </div>
     <div>

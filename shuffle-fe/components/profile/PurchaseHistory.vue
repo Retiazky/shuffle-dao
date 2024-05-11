@@ -4,7 +4,7 @@
     <s-table>
       <s-tableHeader>
         <s-tableRow>
-          <s-tableHead class="w-[150px] table-head"> Invoice n. </s-tableHead>
+          <s-tableHead class="w-[120px] table-head"> Invoice n. </s-tableHead>
           <s-tableHead class="table-head">Date</s-tableHead>
           <s-tableHead class="table-head">Type</s-tableHead>
           <s-tableHead class="table-head text-right"> Price </s-tableHead>
@@ -30,10 +30,10 @@
 
 <style scoped>
 .table-head {
-  @apply text-secondary;
+  @apply text-secondary text-lg;
 }
 
 .text {
-  @apply font-light;
+  @apply font-light text-base;
 }
 </style>
