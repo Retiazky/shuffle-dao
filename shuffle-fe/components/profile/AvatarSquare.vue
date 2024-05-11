@@ -12,11 +12,11 @@ const wallet = account.address.value;
 const params = new URLSearchParams()
 params.append('hash', String(wallet))
 
-const hasCrown = !true
-const hasSunglasses = !true
-const hasCheckeredBackground = !true
-const hasBezierCurve = !true
-const bezierCurvesCount = 6
+const hasCrown = true
+const hasSunglasses = true
+const hasCheckeredBackground = true
+const hasBezierCurve = true
+const bezierCurvesCount = 4
 
 if (hasCrown) {
   params.append('crown', 'true')
@@ -42,6 +42,5 @@ const iframeUrl = `https://bafybeigosihezyyvy6r3c6eijrospy5mmj5wfnijt7ztwkvkfhge
   .border-gradient {
     position: relative;
     box-shadow: 0 0 8px rgba(255, 105, 180, 0.5), 0 0 15px rgba(255, 20, 147, 0.5);
-    border-radius: 4px;
   }
 </style>

@@ -153,7 +153,7 @@ const giveBadge = giveBadgeForm.handleSubmit(async (values) => {
 
 <style scoped>
 span:nth-child(1) {
-  font-size: medium;
+  font-size: large;
   font-weight: 300;
 }
 

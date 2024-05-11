@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col w-[280px] h-[320px] border rounded-sm shadow-md relative justify-end"
+    class="flex flex-col h-[320px] border rounded-md shadow-md relative justify-end overflow-hidden"
   >
     <img
       class="absolute w-full h-full object-cover rounded-t-sm shadow-md"
@@ -8,11 +8,11 @@
       alt="class image"
     />
     <div
-      class="flex flex-col px-2 py-2 mt-1 z-10 justify-end bg-gray-400 bg-opacity-80"
+      class="flex flex-col px-2 py-2 mt-1 z-10 justify-end bg-stone-600/60 backdrop-blur-lg"
     >
-      <span class="info-text">{{ title }}</span>
-      <span class="info-text">{{ level }}</span>
-      <span class="info-text">{{ partOfCourse }}</span>
+      <span class="text-base text-white/90 font-medium ml-1">{{ title }}</span>
+      <span class="text-base text-white/90 font-medium ml-1">{{ level }}</span>
+      <span class="text-base text-white/90 font-medium ml-1">{{ partOfCourse }}</span>
       <s-button
         class="w-full h-8 rounded-sm p-2 shadow-md mt-2"
         variant="secondary"
