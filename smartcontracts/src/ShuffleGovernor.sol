@@ -29,11 +29,7 @@ contract ShuffleGovernor is
         uint256[] memory values,
         bytes[] memory calldatas,
         string memory description
-    )
-        public
-        override
-        returns (uint256)
-    {
+    ) public override returns (uint256) {
         console.log("Proposing %s", msg.sender);
         return super.propose(targets, values, calldatas, description);
     }
