@@ -1,14 +1,16 @@
 import {TypeormDatabase} from '@subsquid/typeorm-store'
-import {processor, GOVERNOR_CONTRACT, DAO_CONTRACT} from './processor'
-import { Instructor, Lesson, Participant, Proposal } from './model'
+import {processor, GOVERNOR_CONTRACT, DAO_CONTRACT, BADGE_CONTRACT} from './processor'
+import { Instructor, Lesson, Participant, Proposal, BadgeOwner } from './model'
 import * as governorAbi from './abi/governor'
 import * as daoAbi from './abi/shuffleDAO'
+import * as badgeAbi from './abi/erc1155'
 
 processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
     const proposals: Map<string, Proposal> = new Map()
 	const instructors: Map<string, Instructor> = new Map()
 	const lessons: Map<string, Lesson> = new Map()
 	const participants: Participant[] = []
+	const badgeOwners: Map<string, BadgeOwner> = new Map()
     for (let c of ctx.blocks) {
         for (let log of c.logs) {
 			if (log.address === GOVERNOR_CONTRACT && log.topics[0] === governorAbi.events.ProposalCreated.topic) {
@@ -108,11 +110,43 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
 				})
 				participants.push(participantEntity)
 			}
+			if(log.address === BADGE_CONTRACT && log.topics[0] === badgeAbi.events.TransferSingle.topic){
+				const { from, to, id, value } = badgeAbi.events.TransferSingle.decode(log)
+				let badgeOwnerFrom = badgeOwners.get(from)
+				let badgeOwnerTo = badgeOwners.get(to)
+				if(!badgeOwnerFrom){
+					badgeOwnerFrom = await ctx.store.get(BadgeOwner, from)
+					if(!badgeOwnerFrom){
+						badgeOwnerFrom = new BadgeOwner({
+							id: from,
+							owner: from,
+							amount: 0n,
+							badgeId: id
+						})
+					}
+				}
+				if(!badgeOwnerTo){
+					badgeOwnerTo = await ctx.store.get(BadgeOwner, to)
+					if(!badgeOwnerTo){
+						badgeOwnerTo = new BadgeOwner({
+							id: to,
+							owner: to,
+							amount: 0n,
+							badgeId: id
+						})
+					}
+				}
+				badgeOwnerFrom.amount -= value
+				badgeOwnerTo.amount += value
+				badgeOwners.set(from, badgeOwnerFrom)
+				badgeOwners.set(to, badgeOwnerTo)
+			}
         }
     }}
 	await ctx.store.save([...proposals.values()])
 	await ctx.store.save([...instructors.values()])
 	await ctx.store.save([...lessons.values()])
+	await ctx.store.save([...badgeOwners.values()])
 	await ctx.store.save(participants)
 })
 
