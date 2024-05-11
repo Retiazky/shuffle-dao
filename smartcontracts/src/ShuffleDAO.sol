@@ -87,6 +87,15 @@ contract ShuffleDAO {
             _fee,
             0
         );
+        emit LessonCreated(
+            _id,
+            _instructor,
+            _style,
+            _startsAt,
+            _endsAt,
+            _maxParticipants,
+            _fee
+        );
     }
 
     function registerToLesson(uint256 _id) public payable {
