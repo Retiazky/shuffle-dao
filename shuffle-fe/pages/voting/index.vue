@@ -7,24 +7,24 @@
         :key="voting.id.toString()"
         class="flex justify-between gap-2 items-center w-full my-1"
       >
-        <span><b>Voting:</b> {{ voting.text }}</span>
+        <span><b>Voting:</b> {{ voting.description }}</span>
         <span class="flex w-1/2 justify-between gap-2">
           <s-button class="flex-1" @click="voteForCategory(voting.id, 1)">
-            I am for ({{ voting.votes.for }})
+            I am for ({{ voting.for }})
           </s-button>
           <s-button
             variant="destructive"
             class="flex-1"
             @click="voteForCategory(voting.id, 0)"
           >
-            I am against ({{ voting.votes.against }})
+            I am against ({{ voting.against }})
           </s-button>
           <s-button
             variant="outline"
             class="flex-1"
             @click="voteForCategory(voting.id, 2)"
           >
-            I am abstain ({{ voting.votes.abstain }})
+            I am abstain ({{ voting.abstain }})
           </s-button>
         </span>
       </li>
@@ -61,54 +61,41 @@
         </form>
       </s-card-content>
     </s-card>
+    <s-button class="w-1/2" @click="delegate">Delegate</s-button>
   </div>
 </template>
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
-import type { Address } from "viem";
+import { type Address, encodeFunctionData } from "viem";
 import * as z from "zod";
 import { config } from "~/plugins/wagmi";
+import type { Proposal } from "~/types";
 import { shuffleDAOContract } from "~/utils/factories/dao-factory";
+import { shuffleGovernorContract } from "~/utils/factories/governor-factory";
+import { shuffleTokenContract } from "~/utils/factories/token-factory";
 
-interface VotingInfo {
-  id: bigint;
-  text: string;
-  votes: {
-    for: bigint;
-    against: bigint;
-    abstain: bigint;
-  };
-}
+const currentVotings = ref<Proposal[]>([]);
 
-const currentVotings = ref<VotingInfo[]>([
-  {
-    id: 0n,
-    text: "New lector: Lucia Mandova",
-    votes: {
-      for: 10n,
-      against: 2n,
-      abstain: 1n,
-    },
-  },
-  {
-    id: 1n,
-    text: "Voting 2",
-    votes: {
-      for: 5n,
-      against: 3n,
-      abstain: 2n,
-    },
-  },
-]);
+onMounted(async () => {
+  // Fetch current votings
+  const data = await $fetch("/api/votes");
+  console.log(data);
+  currentVotings.value = data;
+});
 
 /**
  * Voting info
  * @param id Voting ID
  * @param vote 0 - against, 1 - for, 2 - abstain
  */
-const voteForCategory = (votingId: bigint, vote: 0 | 1 | 2) => {
+const voteForCategory = (votingId: string, vote: 0 | 1 | 2) => {
   console.log(votingId, vote);
+  writeContract({
+    ...shuffleGovernorContract,
+    functionName: "castVote",
+    args: [BigInt(votingId), vote],
+  });
 };
 
 const createInstructorSchema = toTypedSchema(
@@ -127,10 +114,29 @@ const { writeContract, error, status } = useWriteContract({ config });
 
 const onCreateInstructor = createInstructorForm.handleSubmit((values) => {
   console.log(values);
+  const targetAddresses: Address[] = [shuffleDAOContract.address as Address];
+  const targetValues: bigint[] = [0n];
+  const callDatas = [
+    encodeFunctionData({
+      abi: shuffleDAOContract.abi,
+      functionName: "addInstructor",
+      args: [values.address as Address, values.name],
+    }),
+  ];
   writeContract({
-    ...shuffleDAOContract,
-    functionName: "addInstructor",
-    args: [values.address as Address, values.name],
+    ...shuffleGovernorContract,
+    functionName: "propose",
+    args: [targetAddresses, targetValues, callDatas, "Add instructor"],
   });
 });
+
+const { address } = useAccount();
+
+const delegate = () => {
+  writeContract({
+    ...shuffleTokenContract,
+    functionName: "delegate",
+    args: [address.value as Address],
+  });
+};
 </script>

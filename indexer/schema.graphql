@@ -1,4 +1,3 @@
-
 type Proposal @entity {
 	id: ID!
 	proposer: String! @index
@@ -9,4 +8,28 @@ type Proposal @entity {
 	createdAt: Int!
 	voteStart: BigInt!
 	voteEnd: BigInt!
+	executed: Boolean!
+}
+
+type Instructor @entity {
+	id: ID!
+	name: String! @index
+	active: Boolean!
+	lessons: [Lesson] @derivedFrom(field: "instructor")
+}
+
+type Lesson @entity {
+	id: ID!
+	style: String!
+	instructor: Instructor!
+	startsAt: BigInt!
+	endsAt: BigInt!
+	maxParticipants: BigInt!
+	fee: BigInt!
+	participants: [Participant] @derivedFrom(field: "lesson")
+}
+
+type Participant @entity {
+	id: ID!
+	lesson: Lesson!
 }
