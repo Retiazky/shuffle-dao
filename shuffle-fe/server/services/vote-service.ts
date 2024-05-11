@@ -17,7 +17,7 @@ export function voteService() {
         body: JSON.stringify({
           query: `
                     query {
-                      proposals(where: {executed_eq: false, AND: {voteEnd_gt: "${currentTime}", OR: {for_gt: "1000000000000000000000", AND: {for_gt: against}}}}) {
+                      proposals(where: {executed_eq: false, AND: {voteEnd_gt: "${currentTime}", OR: {for_gt: "1000000000000000000000"}}}) {
                         proposer
                         voteEnd
                         voteStart
@@ -27,6 +27,9 @@ export function voteService() {
                         abstain
                         createdAt
                         description
+                        targets
+                        values
+                        calldatas
                       }
                     }
                 `,
