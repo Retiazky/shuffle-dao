@@ -4,16 +4,22 @@
     <page-navigation />
     <span class="flex justify-end items-center gap">
       <client-only>
-        <s-button variant="ghost" @click="toggleColorMode">
+        <s-button
+          variant="link"
+          class="text-foreground"
+          @click="toggleColorMode"
+        >
           <icon
             v-if="colorMode.preference === 'light'"
+            height="24"
+            class="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
             icon="radix-icons:moon"
-            class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
           />
           <icon
             v-else
             icon="radix-icons:sun"
-            class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+            height="24"
+            class="rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
           />
         </s-button>
         <connect-button class="w-1/3" />
@@ -23,13 +29,13 @@
 </template>
 
 <script lang="ts" setup>
-import PageNavigation from '@/components/layout/PageNavigation.vue';
-import { Icon } from '@iconify/vue';
+import PageNavigation from "@/components/layout/PageNavigation.vue";
+import { Icon } from "@iconify/vue";
 
 const colorMode = useColorMode();
-colorMode.preference = 'light';
+colorMode.preference = "light";
 const toggleColorMode = () => {
-  colorMode.preference = colorMode.preference === 'light' ? 'dark' : 'light';
+  colorMode.preference = colorMode.preference === "light" ? "dark" : "light";
 };
 </script>
 

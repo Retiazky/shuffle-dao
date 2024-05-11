@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col justify-center items-center">
-    <h1>Courses</h1>
+    <page-title title="Courses" />
     <s-card class="w-1/2">
       <s-card-header>
         <s-card-title>Create course</s-card-title>
@@ -25,7 +25,7 @@
             <s-form-item>
               <s-form-label>Start date</s-form-label>
               <s-form-control class="flex flex-col items-center">
-                <input type="date" v-bind="componentField" />
+                <s-input type="date" v-bind="componentField" />
               </s-form-control>
               <s-form-description>Course start date</s-form-description>
               <s-form-message />
@@ -35,7 +35,7 @@
             <s-form-item>
               <s-form-label>End date</s-form-label>
               <s-form-control class="flex flex-col items-center">
-                <input type="date" v-bind="componentField" />
+                <s-input type="date" v-bind="componentField" />
               </s-form-control>
               <s-form-description>Course end date</s-form-description>
               <s-form-message />
@@ -80,13 +80,18 @@
             <s-form-item>
               <s-form-label>Fee</s-form-label>
               <s-form-control>
-                <s-input type="number" v-bind="componentField" />
+                <s-input
+                  type="number"
+                  v-bind="componentField"
+                  step="0.0001"
+                  :default-value="0.0001"
+                />
               </s-form-control>
-              <s-form-description>Course fee</s-form-description>
+              <s-form-description>Sepolia ETH (x18)</s-form-description>
               <s-form-message />
             </s-form-item>
           </s-form-field>
-          <s-button class="w-full" type="submit">Submit</s-button>
+          <s-button class="w-full mt-2" type="submit">Submit</s-button>
         </form>
       </s-card-content>
     </s-card>
@@ -100,7 +105,7 @@ import type { Address } from "viem";
 import * as z from "zod";
 import { config } from "~/plugins/wagmi";
 import type { Instructor } from "~/types";
-import { useDaoFactory } from "~/utils/factories/dao-factory";
+import { shuffleDAOContract } from "~/utils/factories/dao-factory";
 
 const instructors = ref<Instructor[]>([
   {
@@ -124,7 +129,7 @@ const createCourseSchema = toTypedSchema(
       ),
       endDate: z.string(),
       maxStudents: z.number().int().positive(),
-      fee: z.number().int().positive(),
+      fee: z.number().positive(),
       lector: z.string().refine(
         (data) => {
           return instructors.value.some(
@@ -147,22 +152,28 @@ const createCourseForm = useForm({
   validationSchema: createCourseSchema,
 });
 
+const { writeContract } = useWriteContract({ config });
+
 const onSubmitCreateCourse = createCourseForm.handleSubmit((values) => {
   console.log("Form submitted!", values);
-
-  const _factory = useDaoFactory(
-    useWriteContract({ config }) as unknown as ReturnType<
-      typeof useWriteContract
-    >
-  );
-  _factory.createLesson(
-    values.lector as Address,
-    values.topic,
-    new Date(values.startDate),
-    new Date(values.endDate),
-    values.maxStudents,
-    values.fee
-  );
+  const newId = BigInt(`0x${crypto.randomUUID().split("-").join("")}`);
+  const _start = BigInt(new Date(values.startDate).getTime());
+  const _end = BigInt(new Date(values.endDate).getTime());
+  const _maxParticipants = BigInt(values.maxStudents);
+  const _fee = BigInt(values.fee * 10000) * BigInt(10n ** 14n);
+  writeContract({
+    ...shuffleDAOContract,
+    functionName: "createLesson",
+    args: [
+      newId,
+      values.lector as Address,
+      values.topic,
+      _start,
+      _end,
+      _maxParticipants,
+      _fee,
+    ],
+  });
 });
 </script>
 
