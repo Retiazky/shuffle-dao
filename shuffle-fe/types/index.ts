@@ -48,3 +48,20 @@ export interface Proposal {
 export interface GraphQLResponse<T> {
   data: T;
 }
+
+export interface Lesson {
+  id: string;
+  fee: number;
+  instructor: {
+    id: string;
+    active: boolean;
+    name: string;
+  };
+  maxParticipants: number;
+  startsAt: string;
+  style: string;
+  endsAt: string;
+  participants: {
+    id: string;
+  }[];
+}

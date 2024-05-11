@@ -16,11 +16,63 @@
         {{ shuffTokenErr ? shuffTokenErr : shuffTokens }}
       </span>
     </div>
+    <s-card v-if="amILector">
+      <s-card-header>
+        <s-card-title>Give Badge</s-card-title>
+        <s-card-description v-if="status || error"
+          >{{ status }} - {{ error }}</s-card-description
+        >
+      </s-card-header>
+      <s-card-content>
+        <form @submit="giveBadge">
+          <s-form-field v-slot="{ componentField }" name="address">
+            <s-form-item>
+              <s-form-label>Address</s-form-label>
+              <s-form-control>
+                <s-input v-bind="componentField" />
+              </s-form-control>
+              <s-form-description>Address of the user</s-form-description>
+              <s-form-message />
+            </s-form-item>
+          </s-form-field>
+          <s-form-field v-slot="{ componentField }" name="type">
+            <s-form-item>
+              <s-form-label>Type</s-form-label>
+              <s-form-control>
+                <s-select v-bind="componentField">
+                  <s-select-trigger>
+                    <s-select-value placeholder="Select a badge" />
+                  </s-select-trigger>
+                  <s-select-content>
+                    <s-select-item
+                      v-for="badge in BADGES"
+                      :key="badge.id"
+                      :value="String(badge.id)"
+                    >
+                      {{ badge.name }}
+                    </s-select-item>
+                  </s-select-content>
+                </s-select>
+              </s-form-control>
+              <s-form-description>Badge type</s-form-description>
+              <s-form-message />
+            </s-form-item>
+          </s-form-field>
+          <s-button class="w-full" type="submit">Give Badge</s-button>
+        </form>
+      </s-card-content>
+    </s-card>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { shuffleTokenContract } from '~/utils/factories/token-factory';
+import { config } from "@/plugins/wagmi";
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import type { Address } from "viem";
+import * as z from "zod";
+import { shuffleDAOContract } from "~/utils/factories/dao-factory";
+import { shuffleTokenContract } from "~/utils/factories/token-factory";
 const account = useAccount();
 const wallet = account.address;
 
@@ -33,14 +85,69 @@ const shortenedWallet = computed(() => {
 
 const { data: userVotingPower, error: userVotingPowerErr } = useReadContract({
   ...shuffleTokenContract,
-  functionName: 'getVotes',
+  functionName: "getVotes",
   args: [account.address.value!],
 });
 
 const { data: shuffTokens, error: shuffTokenErr } = useReadContract({
   ...shuffleTokenContract,
-  functionName: 'balanceOf',
+  functionName: "balanceOf",
   args: [account.address.value!],
+});
+
+const amILector = ref<boolean>(false);
+
+onMounted(async () => {
+  const lectors = await $fetch("/api/lectors");
+  console.log(lectors);
+  amILector.value = lectors.some(
+    (lector) => lector.address === account.address.value?.toLowerCase()
+  );
+});
+
+const BADGES = ref([
+  {
+    name: "Course",
+    id: 0,
+  },
+  {
+    name: "Class",
+    id: 1,
+  },
+  {
+    name: "Workshop",
+    id: 2,
+  },
+  {
+    name: "Special",
+    id: 3,
+  },
+]);
+
+const giveBadgeSchema = toTypedSchema(
+  z.object({
+    address: z
+      .string()
+      .refine((name) => name.length > 0 && /^(0x)?[0-9a-fA-F]{40}$/.test(name)),
+    type: z.string().refine((type) => {
+      return BADGES.value.some((badge) => badge.id === Number(type));
+    }),
+  })
+);
+
+const giveBadgeForm = useForm({
+  validationSchema: giveBadgeSchema,
+});
+
+const { writeContract, status, error } = useWriteContract({ config });
+
+const giveBadge = giveBadgeForm.handleSubmit(async (values) => {
+  console.log(values);
+  writeContract({
+    ...shuffleDAOContract,
+    functionName: "assignBadge",
+    args: [values.address as Address, BigInt(values.type)],
+  });
 });
 </script>
 

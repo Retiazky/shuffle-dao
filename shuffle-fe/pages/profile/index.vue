@@ -24,8 +24,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Badge } from '~/types';
-import { BadgeType } from '~/types';
+import type { Badge } from "~/types";
+import { BadgeType } from "~/types";
 const badges = ref<Badge[]>([
   {
     type: BadgeType.COURSE,
