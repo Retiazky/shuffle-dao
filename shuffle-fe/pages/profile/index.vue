@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-10 w-1/2  mx-auto">
+  <div class="pb-10 w-1/2 mx-auto">
     <page-title title="Profile" />
     <div class="flex items-center gap-4 pl-10">
       <profile-avatar-square />
@@ -23,8 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Badge } from '~/types';
-import { BadgeType } from '~/types';
+import type { Badge } from "~/types";
+import { BadgeType } from "~/types";
 const badges = ref<Badge[]>([
   {
     type: BadgeType.COURSE,

@@ -18,6 +18,23 @@ export const abi = [
   },
   {
     type: "function",
+    name: "assignBadge",
+    inputs: [
+      { name: "_who", type: "address", internalType: "address" },
+      { name: "_badgeId", type: "uint256", internalType: "uint256" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "badgeSC",
+    inputs: [],
+    outputs: [{ name: "", type: "address", internalType: "contract IBadge" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "createLesson",
     inputs: [
       { name: "_id", type: "uint256", internalType: "uint256" },
@@ -32,6 +49,13 @@ export const abi = [
       },
       { name: "_fee", type: "uint256", internalType: "uint256" },
     ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "enableBadges",
+    inputs: [{ name: "_badgeSC", type: "address", internalType: "address" }],
     outputs: [],
     stateMutability: "nonpayable",
   },
@@ -125,6 +149,19 @@ export const abi = [
   },
   {
     type: "function",
+    name: "setGovernanceSC",
+    inputs: [
+      {
+        name: "_governanceSC",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
     name: "verifyParticipant",
     inputs: [
       { name: "_id", type: "uint256", internalType: "uint256" },
@@ -132,6 +169,25 @@ export const abi = [
     ],
     outputs: [{ name: "", type: "bool", internalType: "bool" }],
     stateMutability: "view",
+  },
+  {
+    type: "event",
+    name: "BadgeAssigned",
+    inputs: [
+      {
+        name: "who",
+        type: "address",
+        indexed: false,
+        internalType: "address",
+      },
+      {
+        name: "badgeId",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
   },
   {
     type: "event",
@@ -225,5 +281,13 @@ export const abi = [
       },
     ],
     anonymous: false,
+  },
+  {
+    type: "error",
+    name: "BadgeAlreadyAssigned",
+    inputs: [
+      { name: "who", type: "address", internalType: "address" },
+      { name: "badgeId", type: "uint256", internalType: "uint256" },
+    ],
   },
 ] as const;

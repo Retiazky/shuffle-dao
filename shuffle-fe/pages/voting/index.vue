@@ -31,7 +31,12 @@
             I am abstain ({{ voting.abstain }})
           </s-button>
         </span>
-        <s-button v-else @click="executeProposal(voting)">EXECUTE</s-button>
+        <s-button
+          v-else
+          :disabled="!canExecute(voting)"
+          @click="executeProposal(voting)"
+          >EXECUTE</s-button
+        >
       </li>
     </ul>
     <s-card class="w-1/2">
@@ -131,6 +136,11 @@ const getFormatedDate = (timeEnd: string) => {
   }.${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
 };
 
+const canExecute = (voting: Proposal) => {
+  const time = Number(voting.voteEnd + "000");
+  const date = new Date(time);
+  return date < new Date();
+};
 const createInstructorForm = useForm({
   validationSchema: createInstructorSchema,
 });
