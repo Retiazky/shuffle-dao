@@ -27,10 +27,10 @@ const inputs = {
   eyebrowLeftHeight: () => deriveFromSeed(3) * 20, // createRangeInput('Left eyebrow height', 0, 40, 20),
   eyebrowRightHeight: () => deriveFromSeed(3) * 20, // createRangeInput('Right eyebrow height', 0, 40, 20),
   pupilsHorizontalOffset: () => deriveFromSeed(3) * 20, // createRangeInput('Horizontal pupils offset', 0, 40, 20),
-  hasCheckers: () => 1, // createRangeInput('Has checkers', 0, 1),
-  hasCrown: () => 1, // createRangeInput('Has crown', 0, 1),
-  hasSunglasses: () => 1, // createRangeInput('Has sunglasses', 0, 1),
-  hasBezier: () => 1, // createRangeInput('Has bezier', 0, 1),
+  hasCheckers: () => searchParams.has('checkers'), // createRangeInput('Has checkers', 0, 1),
+  hasCrown: () => searchParams.has('crown'), // createRangeInput('Has crown', 0, 1),
+  hasSunglasses: () => searchParams.has('sunglasses'), // createRangeInput('Has sunglasses', 0, 1),
+  hasBezier: () => searchParams.has('bezier'), // createRangeInput('Has bezier', 0, 1),
 }
 
 ;(function render() {
