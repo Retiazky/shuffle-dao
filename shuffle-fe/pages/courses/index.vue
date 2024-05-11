@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-center items-center">
+  <div class="flex flex-col justify-center items-center pb-10">
     <page-title title="Courses" />
     <s-card class="w-1/2">
       <s-card-header>
@@ -99,18 +99,18 @@
 </template>
 
 <script lang="ts" setup>
-import { toTypedSchema } from "@vee-validate/zod";
-import { useForm } from "vee-validate";
-import type { Address } from "viem";
-import * as z from "zod";
-import { config } from "~/plugins/wagmi";
-import type { Instructor } from "~/types";
-import { shuffleDAOContract } from "~/utils/factories/dao-factory";
+import { toTypedSchema } from '@vee-validate/zod';
+import { useForm } from 'vee-validate';
+import type { Address } from 'viem';
+import * as z from 'zod';
+import { config } from '~/plugins/wagmi';
+import type { Instructor } from '~/types';
+import { shuffleDAOContract } from '~/utils/factories/dao-factory';
 
 const instructors = ref<Instructor[]>([]);
 
 onMounted(async () => {
-  instructors.value = await $fetch("/api/lectors");
+  instructors.value = await $fetch('/api/lectors');
 });
 
 const createCourseSchema = toTypedSchema(
@@ -122,8 +122,8 @@ const createCourseSchema = toTypedSchema(
           return new Date(data) > new Date();
         },
         {
-          message: "Start date must be in the future",
-          path: ["startDate"],
+          message: 'Start date must be in the future',
+          path: ['startDate'],
         }
       ),
       endDate: z.string(),
@@ -136,14 +136,14 @@ const createCourseSchema = toTypedSchema(
           );
         },
         {
-          message: "Instructor does not exist",
-          path: ["lector"],
+          message: 'Instructor does not exist',
+          path: ['lector'],
         }
       ),
     })
     .refine((data) => new Date(data.startDate) < new Date(data.endDate), {
-      message: "Start date must be before end date",
-      path: ["startDate", "endDate"],
+      message: 'Start date must be before end date',
+      path: ['startDate', 'endDate'],
     })
 );
 
@@ -154,15 +154,15 @@ const createCourseForm = useForm({
 const { writeContract } = useWriteContract({ config });
 
 const onSubmitCreateCourse = createCourseForm.handleSubmit((values) => {
-  console.log("Form submitted!", values);
-  const newId = BigInt(`0x${crypto.randomUUID().split("-").join("")}`);
+  console.log('Form submitted!', values);
+  const newId = BigInt(`0x${crypto.randomUUID().split('-').join('')}`);
   const _start = BigInt(new Date(values.startDate).getTime());
   const _end = BigInt(new Date(values.endDate).getTime());
   const _maxParticipants = BigInt(values.maxStudents);
   const _fee = BigInt(values.fee * 10000) * BigInt(10n ** 14n);
   writeContract({
     ...shuffleDAOContract,
-    functionName: "createLesson",
+    functionName: 'createLesson',
     args: [
       newId,
       values.lector as Address,
