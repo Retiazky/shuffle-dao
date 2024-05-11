@@ -1,14 +1,14 @@
 import { abi as shuffleDAOABI } from "@/abi/ShuffleDAO";
 import type { Address } from "viem";
 
-const shuffleDAOContract = {
+export const shuffleDAOContract = {
   address: "0x913625F0BaF4796629e14a487eC1AF6a921D4F18",
   abi: shuffleDAOABI,
 } as const;
 
-export const useDaoFactory = ({
-  writeContract,
-}: ReturnType<typeof useWriteContract>) => {
+export const useDaoFactory = (
+  writeContract: ReturnType<typeof useWriteContract>["writeContract"]
+) => {
   const addInstructor = (instructorAddress: Readonly<Address>, name: string) =>
     writeContract({
       ...shuffleDAOContract,
