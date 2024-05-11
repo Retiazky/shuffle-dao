@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.20;
 
+import {IBadge} from "./interfaces/IBadge.sol";
 contract ShuffleDAO {
     struct Instructor {
         address instructor;
@@ -20,6 +21,7 @@ contract ShuffleDAO {
     }
 
     address public governanceSC;
+    IBadge public badgeSC;
     mapping(address => Instructor) public instructors;
     mapping(uint256 => Lesson) public lessons;
     mapping(uint256 => address[]) public participants;
@@ -87,6 +89,15 @@ contract ShuffleDAO {
             _fee,
             0
         );
+        emit LessonCreated(
+            _id,
+            _instructor,
+            _style,
+            _startsAt,
+            _endsAt,
+            _maxParticipants,
+            _fee
+        );
     }
 
     function registerToLesson(uint256 _id) public payable {
@@ -141,4 +152,27 @@ contract ShuffleDAO {
     function setGovernanceSC(address _governanceSC) public onlyGovernance {
         governanceSC = _governanceSC;
     }
+
+    function assignBadge(address _who, uint256 _badgeId) public onlyInstructor {
+        if (address(badgeSC) == address(0)) {
+            revert("ShuffleDAO: Badges are not enabled");
+        }
+
+        uint256 balance = badgeSC.balanceOf(_who, _badgeId);
+
+        if (balance > 0) {
+            revert BadgeAlreadyAssigned(_who, _badgeId);
+        }
+
+        badgeSC.mint(_who, _badgeId, 1, "");
+        emit BadgeAssigned(_who, _badgeId);
+    }
+
+    function enableBadges(address _badgeSC) public onlyGovernance {
+        badgeSC = IBadge(_badgeSC);
+    }
+
+    event BadgeAssigned(address who, uint256 badgeId);
+
+    error BadgeAlreadyAssigned(address who, uint256 badgeId);
 }
