@@ -94,7 +94,7 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
 				})
 				lessons.set(id.toString(), newLesson)
 			}
-			if(log.address === DAO_CONTRACT && log.topics[0] === daoAbi.events.ParticipantRegistered.topic){{
+			if(log.address === DAO_CONTRACT && log.topics[0] === daoAbi.events.ParticipantRegistered.topic){
 				const { id, participant } = daoAbi.events.ParticipantRegistered.decode(log)
 				let lessonEntity = lessons.get(id.toString())
 				if (!lessonEntity) {
@@ -111,6 +111,7 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
 				participants.push(participantEntity)
 			}
 			if(log.address === BADGE_CONTRACT && log.topics[0] === badgeAbi.events.TransferSingle.topic){
+				console.log('TransferSingle', log)
 				const { from, to, id, value } = badgeAbi.events.TransferSingle.decode(log)
 				let badgeOwnerFrom = badgeOwners.get(from)
 				let badgeOwnerTo = badgeOwners.get(to)
@@ -140,8 +141,7 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
 				badgeOwnerTo.amount += value
 				badgeOwners.set(from, badgeOwnerFrom)
 				badgeOwners.set(to, badgeOwnerTo)
-			}
-        }
+		}
     }}
 	await ctx.store.save([...proposals.values()])
 	await ctx.store.save([...instructors.values()])
