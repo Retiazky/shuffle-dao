@@ -9,7 +9,7 @@ import {
     Transaction as _Transaction,
 } from '@subsquid/evm-processor'
 
-export const GOVERNOR_CONTRACT = '0x'
+export const GOVERNOR_CONTRACT = '0x913625f0baf4796629e14a487ec1af6a921d4f18'
 
 export const processor = new EvmBatchProcessor()
     .setGateway('https://v2.archive.subsquid.io/network/base-sepolia')
@@ -26,12 +26,11 @@ export const processor = new EvmBatchProcessor()
         },
     })
     .setBlockRange({
-        from: 0,
+        from: 9826790,
     })
     .addLog({
-		address: [ GOVERNOR_CONTRACT],
-		topic0: [ governorAbi.events.VoteCast.topic, governorAbi.events.ProposalCreated.topic,
-			governorAbi.events.ProposalExecuted.topic]
+		address: [ GOVERNOR_CONTRACT]
+
 	  })
 
 export type Fields = EvmBatchProcessorFields<typeof processor>

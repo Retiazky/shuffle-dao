@@ -15,8 +15,9 @@ const root = new VersatilePoint(0, 0, WIDTH, HEIGHT)
 const rect = useRect(ctx)
 
 const inputs = {
+  backgroundHue: createRangeInput('Background hue', 0, 360),
   headWidth: createRangeInput('Head width', 160, 300),
-  headTop: createRangeInput('Head top', 0, 250),
+  headTop: createRangeInput('Head top', 100, 240),
   headHue: createRangeInput('Head hue', 0, 360),
   eyebrowsHue: createRangeInput('Eyebrows hue', 0, 360),
   legsGap: createRangeInput('Legs gap', 5, 30),
@@ -24,13 +25,19 @@ const inputs = {
   pupilRightHeight: createRangeInput('Right pupil height', 20, 60, 20),
   eyebrowLeftHeight: createRangeInput('Left eyebrow height', 0, 40, 20),
   eyebrowRightHeight: createRangeInput('Right eyebrow height', 0, 40, 20),
+  pupilsHorizontalOffset: createRangeInput('Horizontal pupils offset', 0, 40, 20),
+  pupilsVerticalOffset: createRangeInput('Vertical pupils offset', 0, 40, 20),
   bootsHue: createRangeInput('Boots hue', 0, 360),
+  hasCheckers: createRangeInput('Has checkers', 0, 1),
   hasCrown: createRangeInput('Has crown', 0, 1),
   hasSunglasses: createRangeInput('Has sunglasses', 0, 1)
 }
 
 ;(function render() {
-  ctx.clearRect(root.x, root.y, root.width, root.height)
+  const ROOT = {
+    checkerSize: 40,
+    backgroundColor: `hsl(${inputs.backgroundHue()}, 20%, 80%)`,
+  }
 
   const HEAD = {
     width: inputs.headWidth(),
@@ -52,10 +59,12 @@ const inputs = {
   }
   
   const PUPIL = {
-    leftWidth: EYE.width / 3,
+    leftWidth: EYE.height / 3,
     leftHeight: inputs.pupilLeftHeight(),
-    rightWidth: EYE.width / 3,
+    rightWidth: EYE.height / 3,
     rightHeight: inputs.pupilRightHeight(),
+    horizontalOffset: inputs.pupilsHorizontalOffset(),
+    verticalOffset: inputs.pupilsVerticalOffset(),
   }
   
   const LEGS = {
@@ -63,12 +72,29 @@ const inputs = {
     width: 3,
     bootsColor: `hsl(${inputs.bootsHue()}, 80%, 20%)`,
   }
+
+  ctx.clearRect(root.x, root.y, root.width, root.height)
+  ctx.fillStyle = ROOT.backgroundColor
+  ctx.fillRect(root.x, root.y, root.width, root.height)
+
+
+  if (inputs.hasCheckers()) {
+    for (let y = 0; y < root.height; y += ROOT.checkerSize) {
+      for (let x = 0; x < root.width; x += ROOT.checkerSize) {
+        if (y % (ROOT.checkerSize * 2) == 0 && x % (ROOT.checkerSize * 2) == 0) {
+          rect(x, y, ROOT.checkerSize, ROOT.checkerSize, 'rgba(0, 0, 0, 0.15)')
+          rect(x + ROOT.checkerSize, y + ROOT.checkerSize, ROOT.checkerSize, ROOT.checkerSize, 'rgba(0, 0, 0, 0.15)')
+        }
+      }
+    }
+  }
   
   const heads = [
     (params: {}) => {
       return root.centerX().gap(-HEAD.width / 2, HEAD.top).do(from => {
         if (HEAD.crown) {
-          ctx.font = '60px Verdana'
+          ctx.font = '80px Verdana'
+          ctx.fillStyle = 'black'
           ctx.fillText('👑', from.x, from.y)
         }
 
@@ -84,7 +110,7 @@ const inputs = {
       selectedHead.gapY(30).centerX().gapX(selectedHead.x).do(p => {
         const leftEye = rect(p.x - 5, p.y, -EYE.width, EYE.height, '#FFF')
         
-        leftEye.bottom().gap(-PUPIL.leftWidth, leftEye.y).do(p => {
+        leftEye.bottom().gap(PUPIL.horizontalOffset  - PUPIL.leftWidth * 2, leftEye.y - PUPIL.verticalOffset).do(p => {
           rect(p.x, p.y, -PUPIL.leftWidth, -PUPIL.leftHeight, '#000')
         })
         
@@ -92,14 +118,14 @@ const inputs = {
         
         const rightEye = rect(p.x + 5, p.y, EYE.width, EYE.height, '#FFF')
         
-        rightEye.bottom().gap(PUPIL.rightWidth, rightEye.y).do(p => {
+        rightEye.bottom().gap(PUPIL.horizontalOffset, rightEye.y - PUPIL.verticalOffset).do(p => {
           rect(p.x, p.y, PUPIL.rightWidth, -PUPIL.rightHeight, '#000')
         })
         
         const rightEyebrow = rect(rightEye.x, rightEye.y, rightEye.width, EYE.eyebrowRightHeight, EYE.eyebrowColor)
 
         if (HEAD.sunglasses) {
-          const glasses = '👓'
+          const glasses = '🕶️'
           ctx.font = '150px Verdana'
           const sunglassesWidth = ctx.measureText(glasses).width
           ctx.fillText(glasses, p.x - sunglassesWidth / 2, leftEye.y + leftEye.height * 1.5)

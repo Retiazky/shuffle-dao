@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import {Test, console} from "forge-std/Test.sol";
 import {ShuffleToken} from "src/ShuffleToken.sol";
 import {ShuffleGovernor} from "src/ShuffleGovernor.sol";
+import {IGovernor} from "@openzeppelin/contracts/governance/IGovernor.sol";
 import {ShuffleDAO} from "src/ShuffleDAO.sol";
 
 contract ShuffleTest is Test {
@@ -54,5 +55,45 @@ contract ShuffleTest is Test {
             callDatas,
             "Add Alice as an instructor"
         );
+
+        uint256 proposalId = governor.hashProposal(
+            addrs,
+            values,
+            callDatas,
+            keccak256("Add Alice as an instructor")
+        );
+        console.log("Proposal ID: %s", proposalId);
+        uint256 proposalDeadline = governor.proposalDeadline(proposalId);
+        console.log("Proposal deadline: %s", proposalDeadline);
+
+        skip(1);
+
+        vm.startPrank(instructor);
+        governor.castVote(proposalId, 1);
+
+        skip(1);
+        vm.warp(1000);
+
+        IGovernor.ProposalState state = governor.state(proposalId);
+        console.log("Proposal state: %s", uint(state));
+        // governor.castVote(proposalId, 1);
+
+        governor.execute(
+            addrs,
+            values,
+            callDatas,
+            keccak256("Add Alice as an instructor")
+        );
+
+        ShuffleDAO.Instructor memory instructorData;
+        (
+            instructorData.instructor,
+            instructorData.status,
+            instructorData.name
+        ) = dao.instructors(instructor);
+
+        assertEq(instructorData.name, "Alice");
     }
 }
+
+// DAO

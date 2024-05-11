@@ -21,7 +21,7 @@ contract ShuffleScript is Script {
         ShuffleGovernor governor = new ShuffleGovernor(token);
         console.log("ShuffleGovernor deployed to %s", address(governor));
 
-        ShuffleDAO dao = new ShuffleDAO(deployerAddress);
+        ShuffleDAO dao = new ShuffleDAO(address(governor));
         console.log("ShuffleDAO deployed to %s", address(dao));
 
         vm.stopBroadcast();
