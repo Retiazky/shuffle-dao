@@ -1,7 +1,7 @@
 import { abi as shuffleGovernorABI } from "@/abi/ShuffleGovernor";
 
 export const shuffleGovernorContract = {
-  address: "0xcAB56aAaF2E06eeFD9f28Bec8F443a0BD06Afebb",
+  address: "0x30dbEcc57bd06B780d5274a2e74527324f372E9b",
   abi: shuffleGovernorABI,
 } as const;
 
