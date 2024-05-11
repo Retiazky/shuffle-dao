@@ -36,4 +36,13 @@ export class Proposal {
 
     @BooleanColumn_({nullable: false})
     executed!: boolean
+
+    @StringColumn_({array: true, nullable: false})
+    targets!: (string | undefined | null)[]
+
+    @StringColumn_({array: true, nullable: false})
+    values!: (string | undefined | null)[]
+
+    @StringColumn_({array: true, nullable: false})
+    calldatas!: (string | undefined | null)[]
 }
