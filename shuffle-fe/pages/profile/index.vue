@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pb-10">
     <page-title title="Profile" />
     <div class="flex items-center gap-4 pl-10">
       <profile-avatar-square />
