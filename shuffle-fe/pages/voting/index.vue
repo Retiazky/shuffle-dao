@@ -1,13 +1,14 @@
 <template>
   <div class="w-full flex flex-col items-center gap-2 px-2">
     <page-title title="Voting" />
-    <ul class="w-full border p-2">
+    <ul v-if="currentVotings.length > 0" class="w-full border p-2">
       <li
         v-for="voting in currentVotings"
         :key="voting.id.toString()"
         class="flex justify-between gap-2 items-center w-full my-1"
       >
         <span><b>Voting:</b> {{ voting.description }}</span>
+        <span> Voting ends in {{ getFormatedDate(voting.voteEnd) }} </span>
         <span
           v-if="voting.for < 1000000000000000000000"
           class="flex w-1/2 justify-between gap-2"
@@ -60,6 +61,16 @@
               <s-form-message />
             </s-form-item>
           </s-form-field>
+          <s-form-field v-slot="{ componentField }" name="description">
+            <s-form-item>
+              <s-form-label>Description</s-form-label>
+              <s-form-control>
+                <s-input v-bind="componentField" />
+              </s-form-control>
+              <s-form-description>Instructor description</s-form-description>
+              <s-form-message />
+            </s-form-item>
+          </s-form-field>
           <s-button class="w-full mt-2" type="submit">Create</s-button>
           <p v-if="error">{{ error }}</p>
         </form>
@@ -107,9 +118,18 @@ const createInstructorSchema = toTypedSchema(
     address: z
       .string()
       .refine((name) => name.length > 0 && /^(0x)?[0-9a-fA-F]{40}$/.test(name)),
-    name: z.string(),
+    name: z.string().min(2).max(50),
+    description: z.string().min(2),
   })
 );
+
+const getFormatedDate = (timeEnd: string) => {
+  const time = Number(timeEnd + "000");
+  const date = new Date(time);
+  return `${date.getDate()}.${
+    date.getMonth() + 1
+  }.${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+};
 
 const createInstructorForm = useForm({
   validationSchema: createInstructorSchema,
@@ -130,7 +150,7 @@ const onCreateInstructor = createInstructorForm.handleSubmit((values) => {
   writeContract({
     ...shuffleGovernorContract,
     functionName: "propose",
-    args: [targetAddresses, targetValues, callDatas, "Add instructor"],
+    args: [targetAddresses, targetValues, callDatas, values.description],
   });
 });
 

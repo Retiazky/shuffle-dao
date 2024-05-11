@@ -1,40 +1,6 @@
 import { abi as shuffleGovernorABI } from "@/abi/ShuffleGovernor";
 
 export const shuffleGovernorContract = {
-  address: "0x30dbEcc57bd06B780d5274a2e74527324f372E9b",
+  address: "0x85D1cd2C9c3F3C751D94eE09205f9a210056317D",
   abi: shuffleGovernorABI,
 } as const;
-
-export const useGovernorFactory = () => {
-  const getProposalThreshold = () =>
-    useReadContract({
-      ...shuffleGovernorContract,
-      functionName: "proposalThreshold",
-      args: [],
-    });
-
-  const getQuorum = (blockNumber: string) => {
-    const _blockNumber = BigInt(blockNumber);
-    useReadContract({
-      ...shuffleGovernorContract,
-      functionName: "quorum",
-      args: [_blockNumber],
-    });
-  };
-
-  const getVotingPeriod = () =>
-    useReadContract({
-      ...shuffleGovernorContract,
-      functionName: "votingPeriod",
-      args: [],
-    });
-
-  const getVotingDelay = () =>
-    useReadContract({
-      ...shuffleGovernorContract,
-      functionName: "votingDelay",
-      args: [],
-    });
-
-  return { getProposalThreshold, getQuorum, getVotingDelay, getVotingPeriod };
-};
