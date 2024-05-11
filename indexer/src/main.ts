@@ -1,15 +1,14 @@
 import {TypeormDatabase} from '@subsquid/typeorm-store'
-import {processor} from './processor'
+import {processor, GOVERNOR_CONTRACT} from './processor'
 import { Proposal } from './model'
-import { GOVERNOR_CONTRACT } from './processor'
 import * as governorAbi from './abi/governor'
 
 processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
     const proposals: Map<string, Proposal> = new Map()
     for (let c of ctx.blocks) {
         for (let log of c.logs) {
-			if (log.address === GOVERNOR_CONTRACT && log.topic === governorAbi.events.ProposalCreated.topic) {
-				const { proposalId, proposer, targets, values, signatures, calldatas, voteStart, voteEnd, description } = governorAbi.events.ProposalCreated.decode(log)
+			if (log.address === GOVERNOR_CONTRACT && log.topics[0] === governorAbi.events.ProposalCreated.topic) {
+				const { proposalId, proposer, voteStart, voteEnd, description } = governorAbi.events.ProposalCreated.decode(log)
 				const proposal = new Proposal({
 					id: proposalId.toString(),
 					proposer,
