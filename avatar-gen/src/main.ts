@@ -160,8 +160,6 @@ const inputs = {
     p.gapX(LEGS.gap).do(p => rect(p.x, p.y, 50, -20, LEGS.bootsColor))
     p.gapX(-LEGS.gap).do(p => rect(p.x, p.y, -50, -20, LEGS.bootsColor))
   })
-  
-  requestAnimationFrame(render)
 })()
 
 document.body.appendChild(canvas)
