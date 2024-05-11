@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col items-center gap-2 px-2">
     <page-title title="Voting" />
-    <ul class="w-full border p-2">
+    <ul v-if="currentVotings.length > 0" class="w-full border p-2">
       <li
         v-for="voting in currentVotings"
         :key="voting.id.toString()"
