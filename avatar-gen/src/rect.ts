@@ -55,13 +55,19 @@ export class VersatilePoint {
   }
 } 
 
-export function rect(ctx: CanvasRenderingContext2D, params: RectangleParams) {
+export function useRect(ctx: CanvasRenderingContext2D) {
+  return (x: number, y: number, width: number, height: number, fill: string = '#000') => {
+    return rect(ctx, x, y, width, height, fill)
+  }
+}
+
+export function rect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, fill: string = '#000') {
   const coercedParams: Required<RectangleParams> = {
-    x: params?.x || 0,
-    y: params?.y || 0,
-    width: params?.width || 10,
-    height: params?.height || 10,
-    fill: params?.fill || '#000',
+    x: x || 0,
+    y: y || 0,
+    width: width || 10,
+    height: height || 10,
+    fill: fill || '#000',
   }
 
   ctx.fillStyle = coercedParams.fill
@@ -69,3 +75,4 @@ export function rect(ctx: CanvasRenderingContext2D, params: RectangleParams) {
 
   return new VersatilePoint(coercedParams.x, coercedParams.y, coercedParams.width, coercedParams.height)
 }
+
