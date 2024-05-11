@@ -19,13 +19,13 @@ processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
 					against: 0n,
 					abstain: 0n,
 					createdAt: c.header.timestamp / 1000,
+					executed: false,
 				})
 				proposals.set(proposalId.toString(), proposal)
 			}
 
         }
     }
-	console.log([...proposals.values()])
 	await ctx.store.save([...proposals.values()])
 })
 
