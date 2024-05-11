@@ -12,7 +12,6 @@
     >
       <span class="text-base text-white/90 font-medium ml-1">{{ title }}</span>
       <span class="text-base text-white/90 font-medium ml-1">{{ level }}</span>
-      <span class="text-base text-white/90 font-medium ml-1">{{ partOfCourse }}</span>
       <s-button
         class="w-full h-8 rounded-sm p-2 shadow-md mt-2"
         variant="secondary"
@@ -20,7 +19,7 @@
         @click="buttonClicked"
       >
         <span class="text-sm font-normal">{{
-          isAttendingClass ? 'Attending' : 'Buy ticket'
+          isAttendingClass ? "Attending" : "Buy lesson"
         }}</span>
       </s-button>
     </div>
@@ -28,34 +27,36 @@
 </template>
 
 <script lang="ts" setup>
-import type { ClassInfo } from '~/types';
-import { ClassLevel } from '~/types';
+import { ClassLevel } from "~/types";
 const props = defineProps<{
-  classInfo: ClassInfo;
+  classInfo: {
+    date: string;
+    style: string;
+  };
 }>();
 
-const day = new Date(props.classInfo.date).toLocaleDateString('en-US', {
-  weekday: 'long',
+const day = new Date(Number(props.classInfo.date)).toLocaleDateString("en-US", {
+  weekday: "long",
 });
-const date = new Date(props.classInfo.date).toLocaleDateString('sk-SK', {
-  day: 'numeric',
-  month: 'numeric',
-});
-const title = `${day} ${date} ${props.classInfo.time}`;
-const level = `${props.classInfo.level} Level`;
-const partOfCourse = `${
-  props.classInfo.partOfCourse ? 'Part of Course' : 'Single Class'
-}`;
+const date = new Date(Number(props.classInfo.date)).toLocaleDateString(
+  "sk-SK",
+  {
+    day: "numeric",
+    month: "numeric",
+  }
+);
+const title = `${day} ${date}`;
+const level = `${props.classInfo.style} Style`;
 
 const isAttendingClass = ref(Math.random() > 0.5);
 const imgSrc =
-  props.classInfo.level === ClassLevel.BEGINNER
-    ? 'img/beginner.jpg'
-    : props.classInfo.level === ClassLevel.INTERMEDIATE
-    ? 'img/intermediate.jpg'
-    : props.classInfo.level === ClassLevel.ADVANCED
-    ? 'img/advanced.jpg'
-    : 'img/open.jpg';
+  props.classInfo.style === ClassLevel.BEGINNER
+    ? "img/beginner.jpg"
+    : props.classInfo.style === ClassLevel.INTERMEDIATE
+    ? "img/intermediate.jpg"
+    : props.classInfo.style === ClassLevel.ADVANCED
+    ? "img/advanced.jpg"
+    : "img/open.jpg";
 
 const buttonClicked = () => {
   isAttendingClass.value = !isAttendingClass.value;
